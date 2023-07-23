@@ -1,0 +1,233 @@
+﻿@model IssuePilot.Models.ViewModels.ProjectOtherViewModel
+
+@{
+    ViewData["Title"] = "Weiteres";
+    ViewBag.Tab = "2";
+}
+<div class="row justify-content-between mx-0">
+    <h4 class="text-break">
+        <a class="back-link btn-slide rounded-pill pr-2 py-1" asp-action="Index" asp-controller="Project">
+            <span class="icon-wrapper-clickable">
+                <svg class="back-icon" width="15" height="25" viewBox="0 0 15 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 24L3.83456 15.018C2.79432 13.8738 2.79432 12.1262 3.83456 10.982L12 2" stroke-width="4" />
+                </svg>
+            </span> <span class="back-icon has-icon button-text">Projekte</span>
+        </a>
+    </h4>
+    <div>
+        @if (Model.IsOwner)
+        {
+            <button type="button" style="min-width:60px" class="text-nowrap btn btn-blue btn-slide btn-slide-blue ml-2 mb-2" data-toggle="modal" data-target="#bp-">
+                Projekt bearbeiten
+            </button>
+            <div class="modal fade" id="bp-" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content border-0 py-2">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title">Projekt bearbeiten</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body mx-5">
+                            <form asp-action="Other" method="post">
+                                <input type="hidden" asp-for="EditCategoryName" value="a" />
+                                <input type="hidden" asp-for="CreateCategoryName" value="a" />
+                                <input type="hidden" asp-for="Id" />
+                                <div class="form-group mt-3">
+                                    <label>Name</label>
+                                    <input asp-for="Title" value="@Model.Title" class="form-control" />
+                                    <span asp-validation-for="Title" class="text-danger text-break"></span>
+                                    @if (Model.TitleExists)
+                                    {
+                                        <label class="text-danger text-break">Der Titel existiert bereits!</label>
+                                        <script>
+                                            window.onload = function () {
+                                                $('#bp-').modal('show');
+                                            };
+                                        </script>
+                                    }
+                                <div class="form-group">
+                                    <label class="control-label">Beschreibung</label>
+                                    <textarea asp-for="Description" class="form-control"></textarea>
+                                </div>
+                                </div>
+                                <div class="text-right mt-5 form-group">
+                                    <button type="submit" style="min-width:60px" class="text-nowrap btn btn-blue btn-slide btn-slide-blue">Speichern</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (User.IsInRole("Projektmanager") || User.IsInRole("Admin"))
+            {
+                <a style="min-width:60px" class="text-nowrap btn btn-slide btn-slide-blue btn-blue align-self-center ml-2 mb-2" asp-action="Delete" asp-route-id="@Model.Id">Projekt löschen</a>
+            }
+        }
+    </div>
+</div>
+<h2 class="text-break mt-4 mb-4">
+    @Html.DisplayFor(model => model.ActualTitle)
+</h2>
+<div>
+    <a class="tab-link underline-hover-wrapper" asp-controller="Ticket" asp-action="Tickets" asp-route-id="@Model.Id"><span class="underline-hover">Tickets</span></a>
+    <a class="tab-link underline-hover-wrapper" asp-action="Members" asp-controller="Project" asp-route-id="@Model.Id"><span class="underline-hover">Mitglieder</span></a>
+    <a class="tab-link" asp-action="Other" asp-controller="Project" asp-route-id="@Model.Id"><span class="gradient-underline">Weiteres</span></a>
+</div>
+<div>
+    <hr />
+    <div class="row">
+        <div class="offset-lg-3 offset-md-2"></div>
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-card border-0">
+                <h4 class="card-header">Allgemeines</h4>
+                <div class="card-body">
+                    <dl class="row text-break">
+                        <dt class="col-6">
+                            Ersteller des Projektes:
+                        </dt>
+                        <dd class="col-6">
+                            @Html.DisplayFor(model => model.CreatorName)
+                        </dd>
+                        <dt class="col-6">
+                            <label>Erstellungsdatum: </label>
+                        </dt>
+                        <dd class="col-6">
+                            @Html.DisplayFor(model => model.CreateDate)
+                        </dd>
+                    </dl>
+                    @if (Model.Description == null)
+                    {
+                        <p>Keine Beschreibung</p>
+                    }
+                    else
+                    {
+                        <p>@Html.DisplayFor(model => model.Description)</p>
+                    }
+                </div>
+            </div>
+            <div class="mt-4 card border-0 shadow-card">
+                <div class="card-header border-bottom">
+                    <h4 class="d-inline align-text-top">
+                        Ticket-Kategorien @if (Model.TicketCategories.Count == 100)
+                        {
+                            <span>(Maximum erreicht!)</span>
+                        }
+                    </h4>
+                    @if (Model.TicketCategories.Count < 100 && Model.IsOwner)
+                    {
+                        <button type="button" style="min-width:60px" class="text-nowrap btn btn-blue btn-slide btn-slide-blue ml-2 my-1 float-right" data-toggle="modal" data-target="#k-">
+                            + Kategorie
+                        </button>
+                        <div class="modal fade" id="k-" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content border-0 py-2">
+                                    <div class="modal-header border-0">
+                                        <h5 class="modal-title">Kategorie erstellen</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+
+                                    <div class="modal-body mx-5">
+                                        <form asp-action="OtherCreateCategory" method="post">
+                                            <input type="hidden" asp-for="Id" />
+                                            <input type="hidden" asp-for="Title" />
+                                            <input type="hidden" asp-for="EditCategoryName" value="a" />
+                                            <div class="form-group mt-3">
+                                                <label>Name</label>
+                                                <input asp-for="CreateCategoryName" class="form-control" />
+                                                <span asp-validation-for="CreateCategoryName" class="text-danger text-break"></span>
+                                            </div>
+                                            <div class="text-right mt-5 form-group">
+                                                <button type="submit" style="min-width:60px" class="text-nowrap btn btn-blue btn-slide btn-slide-blue">Speichern</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <table class="table">
+                    <tbody class="text-break">
+                        @foreach (var item in Model.TicketCategories)
+                        {
+                            <tr>
+                                <td class="col-6">
+                                    @Html.DisplayFor(model => item.Name)
+                                </td>
+                                <td class="col-6">
+                                    @if (Model.IsOwner == true || User.IsInRole("Admin"))
+                                    {
+                                        <button type="button" style="min-width:60px" class="text-nowrap btn btn-outline-primary ml-2 my-1" data-toggle="modal" data-target="#b-@item.Id">
+                                            Bearbeiten
+                                        </button>
+                                        <div class="modal fade" id="b-@item.Id" tabindex="-1" role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content border-0 py-2">
+                                                    <div class="modal-header border-0">
+                                                        <h5 class="modal-title">Kategorie bearbeiten</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="modal-body mx-5">
+                                                        <form asp-action="OtherEditCategory" method="post">
+                                                            <input type="hidden" asp-for="EditCategoryId" value="@item.Id" />
+                                                            <input type="hidden" asp-for="Title" />
+                                                            <input type="hidden" asp-for="CreateCategoryName" value="a" />
+                                                            <div class="form-group mt-3">
+                                                                <label>Name</label>
+                                                                <input asp-for="EditCategoryName" value="@item.Name" class="form-control" />
+                                                                <span asp-validation-for="EditCategoryName" class="text-danger text-break"></span>
+                                                            </div>
+                                                            <div class="text-right mt-5 form-group">
+                                                                <button type="submit" style="min-width:60px" class="text-nowrap btn btn-blue btn-slide btn-slide-blue">Speichern</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" style="min-width:60px" class="text-nowrap btn btn-outline-primary ml-2 my-1" data-toggle="modal" data-target="#l-@item.Id">
+                                            Löschen
+                                        </button>
+                                        <div class="modal fade" id="l-@item.Id" tabindex="-1" role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content border-0">
+                                                    <div class="modal-header border-0">
+                                                        <h5 class="modal-title">Kategorie löschen: @item.Name</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body mr-4 ml-3">
+                                                        <p>Möchten Sie die Kategorie „@item.Name” wirklich löschen?</p>
+                                                        <form asp-action="DeleteCategory" method="post" asp-route-categoryId="@item.Id">
+                                                            <div class="text-right mt-4 form-group">
+                                                                <input type="submit" value="Löschen" class="btn btn-danger" name="submit">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

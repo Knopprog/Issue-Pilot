@@ -1,0 +1,346 @@
+﻿@model IssuePilot.Models.ViewModels.TicketTicketsViewModel
+
+@{
+    ViewData["Title"] = "Tickets";
+    ViewBag.Tab = "2";
+}
+
+<div class="row justify-content-between mx-0">
+    <h4 class="text-break">
+        <a class="back-link btn-slide rounded-pill pr-2 py-1" asp-action="Index" asp-controller="Project">
+            <span class="icon-wrapper-clickable">
+                <svg class="back-icon" width="15" height="25" viewBox="0 0 15 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 24L3.83456 15.018C2.79432 13.8738 2.79432 12.1262 3.83456 10.982L12 2" stroke-width="4" />
+                </svg>
+            </span> <span class="back-icon has-icon">Projekte</span>
+        </a>
+    </h4>
+    <a class="text-nowrap btn btn-slide btn-slide-blue btn-blue mb-2" style="width:auto" asp-action="Create" asp-controller="Ticket" asp-route-id="@Model.Project.Id">+ Ticket</a>
+</div>
+
+<h2 class="text-break mt-4 mb-4">@Html.DisplayFor(model => model.Project.Title)</h2>
+<div>
+    <a class="tab-link" asp-route-id="@Model.Project.Id"><span class="gradient-underline">Tickets</span></a>
+    <a class="tab-link underline-hover-wrapper" asp-action="Members" asp-controller="Project" asp-route-id="@Model.Project.Id"><span class="underline-hover">Mitglieder</span></a>
+    <a class="tab-link underline-hover-wrapper" asp-action="Other" asp-controller="Project" asp-route-id="@Model.Project.Id"><span class="underline-hover">Weiteres</span></a>
+</div>
+<hr />
+<div class="row">
+    <div class="offset-lg-3 offset-md-2"></div>
+    <div class="col-lg-6 col-md-8">
+        <div class="justify-content-center row">
+            <form class="input-group mx-3 mb-1" asp-action="Tickets" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-canceled="@ViewData["CanceledIsChecked"]" asp-route-closed="@ViewData["ClosedIsChecked"]" asp-route-inProgress="@ViewData["InProgressIsChecked"]" asp-route-paused="@ViewData["PausedIsChecked"]" asp-route-open="@ViewData["OpenIsChecked"]">
+                <div class="input-group-prepend">
+                    <button class="btn btn-search rounded-pill-left border-right-0">
+                        <img src="~/img/Search.svg" />
+                    </button>
+                </div>
+                <input class="form-control rounded-pill-right" placeholder="Suchen..." type="search" name="SearchString" value="@ViewData["CurrentFilter"]" data-toggle="tooltip" data-placement="top" title="Nach Id, Titel, Kategorie, Ersteller oder Beschreibung suchen" />
+            </form>
+        </div>
+        <div class="row mb-5">
+            <div class="dropdown ml-3">
+                <a class="btn btn-light btn-sort dropdown-toggle p-2 px-3 mt-2 rounded-pill" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @switch (Model.CurrentSortOrder)
+                    {
+                        default:
+                            <text>Datum (Neu bis Alt)</text>
+                            break;
+                        case "date_asc":
+                            <text>Datum (Alt bis Neu)</text>
+                            break;
+                        case "title_desc":
+                            <text>Titel (Z-A)</text>
+                            break;
+                        case "title":
+                            <text>Titel (A-Z)</text>
+                            break;
+                        case "weight_desc":
+                            <text>Priorität (Absteigend)</text>
+                            break;
+                        case "weight":
+                            <text>Priorität (Aufsteigend)</text>
+                            break;
+                        case "deadline_desc":
+                            <text>Deadline (Neu bis Alt)</text>
+                            break;
+                        case "deadline":
+                            <text>Deadline (Alt bis Neu)</text>
+                            break;
+                    }
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="font-family: Montserrat-Medium;">
+                        <a class="py-1 @(Model.CurrentSortOrder == "" ? "gradient-blue" : "dropdown-item")" asp-action="Tickets" asp-route-sortOrder="@ViewData["DateDescSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-canceled="@ViewData["CanceledIsChecked"]" asp-route-closed="@ViewData["ClosedIsChecked"]" asp-route-inProgress="@ViewData["InProgressIsChecked"]" asp-route-paused="@ViewData["PausedIsChecked"]" asp-route-open="@ViewData["OpenIsChecked"]">Datum (Neu bis Alt)</a>
+                        <a class="py-1 @(Model.CurrentSortOrder == "date_asc" ? "gradient-blue" : "dropdown-item")" asp-action="Tickets" asp-route-sortOrder="@ViewData["DateAscSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-canceled="@ViewData["CanceledIsChecked"]" asp-route-closed="@ViewData["ClosedIsChecked"]" asp-route-inProgress="@ViewData["InProgressIsChecked"]" asp-route-paused="@ViewData["PausedIsChecked"]" asp-route-open="@ViewData["OpenIsChecked"]">Datum (Alt bis Neu)</a>
+                        <a class="py-1 @(Model.CurrentSortOrder == "title_desc" ? "gradient-blue" : "dropdown-item")" asp-action="Tickets" asp-route-sortOrder="@ViewData["TitleDescSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-canceled="@ViewData["CanceledIsChecked"]" asp-route-closed="@ViewData["ClosedIsChecked"]" asp-route-inProgress="@ViewData["InProgressIsChecked"]" asp-route-paused="@ViewData["PausedIsChecked"]" asp-route-open="@ViewData["OpenIsChecked"]">Titel (Z-A)</a>
+                        <a class="py-1 @(Model.CurrentSortOrder == "title" ? "gradient-blue" : "dropdown-item")" asp-action="Tickets" asp-route-sortOrder="@ViewData["TitleAscSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-canceled="@ViewData["CanceledIsChecked"]" asp-route-closed="@ViewData["ClosedIsChecked"]" asp-route-inProgress="@ViewData["InProgressIsChecked"]" asp-route-paused="@ViewData["PausedIsChecked"]" asp-route-open="@ViewData["OpenIsChecked"]">Titel (A-Z)</a>
+                        <a class="py-1 @(Model.CurrentSortOrder == "weight_desc" ? "gradient-blue" : "dropdown-item")" asp-action="Tickets" asp-route-sortOrder="@ViewData["WeightDescSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-canceled="@ViewData["CanceledIsChecked"]" asp-route-closed="@ViewData["ClosedIsChecked"]" asp-route-inProgress="@ViewData["InProgressIsChecked"]" asp-route-paused="@ViewData["PausedIsChecked"]" asp-route-open="@ViewData["OpenIsChecked"]">Priorität (Absteigend)</a>
+                        <a class="py-1 @(Model.CurrentSortOrder == "weight" ? "gradient-blue" : "dropdown-item")" asp-action="Tickets" asp-route-sortOrder="@ViewData["WeightAscSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-canceled="@ViewData["CanceledIsChecked"]" asp-route-closed="@ViewData["ClosedIsChecked"]" asp-route-inProgress="@ViewData["InProgressIsChecked"]" asp-route-paused="@ViewData["PausedIsChecked"]" asp-route-open="@ViewData["OpenIsChecked"]">Priorität (Aufsteigend)</a>
+                        <a class="py-1 @(Model.CurrentSortOrder == "deadline_desc" ? "gradient-blue" : "dropdown-item")" asp-action="Tickets" asp-route-sortOrder="@ViewData["DeadlineDescSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-canceled="@ViewData["CanceledIsChecked"]" asp-route-closed="@ViewData["ClosedIsChecked"]" asp-route-inProgress="@ViewData["InProgressIsChecked"]" asp-route-paused="@ViewData["PausedIsChecked"]" asp-route-open="@ViewData["OpenIsChecked"]">Deadline (Neu bis Alt)</a>
+                        <a class="py-1 @(Model.CurrentSortOrder == "deadline" ? "gradient-blue" : "dropdown-item")" asp-action="Tickets" asp-route-sortOrder="@ViewData["DeadlineAscSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-canceled="@ViewData["CanceledIsChecked"]" asp-route-closed="@ViewData["ClosedIsChecked"]" asp-route-inProgress="@ViewData["InProgressIsChecked"]" asp-route-paused="@ViewData["PausedIsChecked"]" asp-route-open="@ViewData["OpenIsChecked"]">Deadline (Alt bis Neu)</a>
+                </div>
+            </div>
+            <div class="dropdown row mx-3 ml-md-1">
+                <a class="btn btn-light btn-sort dropdown-toggle p-2 px-3 mt-2 rounded-pill" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="icon-wrapper" style="height: 44px">
+                        <svg class="icon-padding align-baseline" src="~/img/Filter.svg" width="15" height="13" viewBox="0 0 15 13" fill="none">
+                            <path d="M8.86364 10.8333L6.13636 13V6.96429L0 0H15L8.86364 6.96429V10.8333Z" fill="#464c50" />
+                        </svg>
+                    </span>
+                    <span class="has-icon">Status filtern</span>
+                </a>
+                <div class="dropdown-menu">
+                    <form asp-action="Tickets" asp-route-Open="@ViewData["Open"]" id="openCheck" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-canceled="@ViewData["CanceledIsChecked"]" asp-route-closed="@ViewData["ClosedIsChecked"]" asp-route-inProgress="@ViewData["InProgressIsChecked"]" asp-route-paused="@ViewData["PausedIsChecked"]">
+                        <div class="form-group px-3 hover-shadow m-0 p-1 dropdown-check-select" onclick="document.getElementById('openCheck').submit()">
+                            <div class="custom-control custom-checkbox text-center">
+                                <input type="checkbox" class="custom-control-input" id="open" onchange="document.getElementById('openCheck').submit()" checked="@ViewData["OpenIsChecked"]" />
+                                <label class="custom-control-label" for="open">Offen</label>
+                            </div>
+                        </div>
+                    </form>
+                    <form asp-action="Tickets" asp-route-inProgress="@ViewData["InProgress"]" id="inProgressCheck" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-paused="@ViewData["PausedIsChecked"]" asp-route-canceled="@ViewData["CanceledIsChecked"]" asp-route-closed="@ViewData["ClosedIsChecked"]" asp-route-open="@ViewData["OpenIsChecked"]">
+                        <div class="form-group px-3 hover-shadow m-0 p-1 dropdown-check-select" onclick="document.getElementById('inProgressCheck').submit()">
+                            <div class="custom-control custom-checkbox text-center">
+                                <input type="checkbox" class="custom-control-input" id="inProgress" onchange="document.getElementById('inProgressCheck').submit()" checked="@ViewData["InProgressIsChecked"]" />
+                                <label class="custom-control-label" for="inProgress">In Bearbeitung</label>
+                            </div>
+                        </div>
+                    </form>
+                    <form asp-action="Tickets" asp-route-closed="@ViewData["Closed"]" id="closedCheck" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-canceled="@ViewData["CanceledIsChecked"]" asp-route-open="@ViewData["OpenIsChecked"]" asp-route-paused="@ViewData["PausedIsChecked"]" asp-route-inProgress="@ViewData["InProgressIsChecked"]">
+                        <div class="form-group px-3 hover-shadow m-0 p-1 dropdown-check-select" onclick="document.getElementById('closedCheck').submit()">
+                            <div class="custom-control custom-checkbox text-center">
+                                <input type="checkbox" class="custom-control-input" id="closed" onchange="document.getElementById('closedCheck').submit()" checked="@ViewData["ClosedIsChecked"]" />
+                                <label class="custom-control-label" for="closed">Abgeschlossen</label>
+                            </div>
+                        </div>
+                    </form>
+                    <form asp-action="Tickets" asp-route-paused="@ViewData["Paused"]" id="pausedCheck" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-canceled="@ViewData["CanceledIsChecked"]" asp-route-closed="@ViewData["ClosedIsChecked"]" asp-route-inProgress="@ViewData["InProgressIsChecked"]" asp-route-open="@ViewData["OpenIsChecked"]">
+                        <div class="form-group px-3 hover-shadow m-0 p-1 dropdown-check-select" onclick="document.getElementById('pausedCheck').submit()">
+                            <div class="custom-control custom-checkbox text-center">
+                                <input type="checkbox" class="custom-control-input" id="paused" onchange="document.getElementById('pausedCheck').submit()" checked="@ViewData["PausedIsChecked"]" />
+                                <label class="custom-control-label" for="paused">Pausiert</label>
+                            </div>
+                        </div>
+                    </form>
+                    <form asp-action="Tickets" asp-route-canceled="@ViewData["Canceled"]" id="canceledCheck" asp-route-currentFilter="@ViewData["CurrentFilter"]" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-closed="@ViewData["ClosedIsChecked"]" asp-route-open="@ViewData["OpenIsChecked"]" asp-route-inProgress="@ViewData["InProgressIsChecked"]" asp-route-paused="@ViewData["PausedIsChecked"]">
+                        <div class="form-group px-3 hover-shadow m-0 p-1 dropdown-check-select" onclick="document.getElementById('canceledCheck').submit()">
+                            <div class="custom-control custom-checkbox  text-center hover-shadow">
+                                <input type="checkbox" class="custom-control-input" id="canceled" onchange="document.getElementById('canceledCheck').submit()" checked="@ViewData["CanceledIsChecked"]" />
+                                <label class="custom-control-label" for="canceled">Abgebrochen</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        @foreach (var ticket in Model.Tickets)
+        {
+            <div class="card mb-2 shadow-card hover-shadow">
+                <a class="fill-div p-0 rounded" asp-action="Details" asp-route-id="@ticket.Id" asp-controller="Ticket">
+                    <div class="card-body row py-1 px-1">
+                        <div class="col-1 p-0 text-center" style="flex-wrap: wrap;">
+                            <span class="icon-wrapper" data-toggle="tooltip" data-placement="top" title="@ticket.Status.Name" style="pointer-events: visible;">
+                                @switch (ticket.Status.Id)
+                                {
+                                    case IssuePilot.Models.DBModels.TicketStatusId.Open:
+                                        <img class="h-75 w-75" src="~/img/Offen.svg" />
+                                        break;
+                                    case IssuePilot.Models.DBModels.TicketStatusId.InProgress:
+                                        <img class="h-75 w-75" src="~/img/InBearbeitung.svg" />
+                                        break;
+                                    case IssuePilot.Models.DBModels.TicketStatusId.Paused:
+                                        <img class="h-75 w-75" src="~/img/Pausiert.svg" />
+                                        break;
+                                    case IssuePilot.Models.DBModels.TicketStatusId.Canceled:
+                                        <img class="h-75 w-75" src="~/img/Abgebrochen.svg" />
+                                        break;
+                                    case IssuePilot.Models.DBModels.TicketStatusId.Closed:
+                                        <img class="h-75 w-75" src="~/img/Abgeschlossen.svg" />
+                                        break;
+                                }
+                            </span>
+                        </div>
+                        <div class="col-11 pr-3 mx-auto">
+                            <div class="float-right mr-1">
+                                <span class="icon-wrapper">
+                                    <img class="icon-padding align-top mt-1" src="~/img/Erstellungsdatum.svg" />
+                                </span>
+                                <small style="color: #464c50;" data-toggle="tooltip" data-placement="top" title="Erstellungsdatum" class="has-icon">@Html.DisplayFor(ticketModel => ticket.CreateDate)</small>
+                            </div>
+                            <div class="card-title mb-1">
+                                <span>
+                                    @ticket.Title
+                                    @switch (ticket.Weight)
+                                    {
+                                        case 1:
+                                            <span class="low-priority-box rounded p-1 ml-1">Niedrig</span>
+                                            break;
+                                        case 2:
+                                            <span class="middle-priority-box rounded p-1 ml-1">Mittel</span>
+                                            break;
+                                        case 3:
+                                            <span class="high-priority-box rounded p-1 ml-1">Hoch</span>
+                                            break;
+                                    }
+                                </span>
+                                @if (ticket.Deadline != null)
+                                {
+                                    <span class="text-nowrap" style="font-size: 16px;">
+                                        <span class="icon-wrapper">
+                                            <img class="icon-padding align-baseline mt-1" src="~/img/Deadline.svg" />
+                                        </span>
+                                        @if (ticket.ClosedByUser == null && DateTime.Compare(DateTime.Now, (DateTime)ticket.Deadline) > 0)
+                                        {
+                                            <span data-toggle="tooltip" data-placement="top" title="Deadline nicht eingehalten!" class="has-icon text-danger" style="font-family:Montserrat-Bold;">@Html.DisplayFor(ticketModel => ticket.Deadline)</span>
+                                        }
+                                        else
+                                        {
+                                            <span data-toggle="tooltip" data-placement="top" title="Deadline" class="has-icon" style="font-family:Montserrat-Semibold;color: #464c50;">@Html.DisplayFor(ticketModel => ticket.Deadline)</span>
+                                        }
+                                    </span>
+                                }
+
+                            </div>
+
+                            <div style="color: #464c50;">
+                                @if (ticket.Description != null)
+                                {
+                                    <p class="card-text text-line-limit mb-2 small">@ticket.Description</p>
+                                }
+                                @if (ticket.TicketProjectCategories.Count > 0)
+                                {
+                                    <p class="card-text mb-1">
+                                        <span class="icon-wrapper text-left">
+                                            <img class="icon-padding align-top mt-1" src="~/img/Tag.svg" />
+                                        </span>
+                                        <small class="one-line-limt align-bottom pl-4">
+                                            @{
+                                                bool first = true;
+                                                foreach (var ticketProjectCategory in Model.TicketProjectCategoriesOfProject)
+                                                {
+                                                    if (ticketProjectCategory.TicketId == ticket.Id)
+                                                    {
+                                                        foreach (var ticketCategory in Model.TicketCategoriesOfProject)
+                                                        {
+                                                            if (ticketProjectCategory.TicketCategoryId.Equals(ticketCategory.Id))
+                                                            {
+                                                                if (first)
+                                                                {
+                                                                    @ticketCategory.Name
+                                                                    first = false;
+                                                                }
+                                                                else
+                                                                {<span>, </span>@ticketCategory.Name
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            }
+                                        </small>
+                                    </p>
+                                }
+                                <p class="card-text">
+                                    <span class="icon-wrapper text-left">
+                                        <img class="icon-padding align-top mt-1" src="~/img/Kommentare.svg" />
+                                    </span>
+                                    <small data-toggle="tooltip" data-placement="top" title="Kommentare" class="pl-4">@ticket.Comments.Count</small>
+
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@{
+    var prevWrapper = !Model.Tickets.HasPreviousPage ? "" : "underline-hover-wrapper";
+    var prevUnderline = !Model.Tickets.HasPreviousPage ? "gradient-underline" : "underline-hover";
+}
+<div class="mb-md-3 mb-lg-4 mb-2"></div>
+<div class="text-center mb-5">
+    @if (Model.Tickets.PageIndex > 2)
+    {
+        <a asp-action="Tickets"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           asp-route-canceled="@ViewData["CanceledIsChecked"]"
+           asp-route-closed="@ViewData["ClosedIsChecked"]"
+           asp-route-inProgress="@ViewData["InProgressIsChecked"]"
+           asp-route-paused="@ViewData["PausedIsChecked"]"
+           asp-route-open="@ViewData["OpenIsChecked"]"
+           asp-route-pageNumber="1"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">1</span>
+        </a>
+        <span>...</span>
+    }
+
+    @if (Model.Tickets.PageIndex > 1)
+    {
+        <a asp-action="Tickets"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           asp-route-canceled="@ViewData["CanceledIsChecked"]"
+           asp-route-closed="@ViewData["ClosedIsChecked"]"
+           asp-route-inProgress="@ViewData["InProgressIsChecked"]"
+           asp-route-paused="@ViewData["PausedIsChecked"]"
+           asp-route-open="@ViewData["OpenIsChecked"]"
+           asp-route-pageNumber="@(Model.Tickets.PageIndex - 1)"
+           class="tab-link @prevWrapper">
+            <span class="@prevUnderline">@(Model.Tickets.PageIndex - 1)</span>
+        </a>
+    }
+    <a class="tab-link">
+        <span class="gradient-underline">@Model.Tickets.PageIndex</span>
+    </a>
+    @if (Model.Tickets.HasNextPage)
+    {
+        <a asp-action="Tickets"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-pageNumber="@(Model.Tickets.PageIndex + 1)"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           asp-route-canceled="@ViewData["CanceledIsChecked"]"
+           asp-route-closed="@ViewData["ClosedIsChecked"]"
+           asp-route-inProgress="@ViewData["InProgressIsChecked"]"
+           asp-route-paused="@ViewData["PausedIsChecked"]"
+           asp-route-open="@ViewData["OpenIsChecked"]"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">@(Model.Tickets.PageIndex + 1)</span>
+        </a>
+    }
+    @if (Model.Tickets.TotalPages > Model.Tickets.PageIndex + 1)
+    {
+        <a asp-action="Tickets"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           asp-route-canceled="@ViewData["CanceledIsChecked"]"
+           asp-route-closed="@ViewData["ClosedIsChecked"]"
+           asp-route-inProgress="@ViewData["InProgressIsChecked"]"
+           asp-route-paused="@ViewData["PausedIsChecked"]"
+           asp-route-open="@ViewData["OpenIsChecked"]"
+           asp-route-pageNumber="@(Model.Tickets.PageIndex + 2)"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">@(Model.Tickets.PageIndex + 2)</span>
+        </a>
+    }
+    @if (Model.Tickets.TotalPages > Model.Tickets.PageIndex + 2)
+    {
+        <a asp-action="Tickets"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           asp-route-canceled="@ViewData["CanceledIsChecked"]"
+           asp-route-closed="@ViewData["ClosedIsChecked"]"
+           asp-route-inProgress="@ViewData["InProgressIsChecked"]"
+           asp-route-paused="@ViewData["PausedIsChecked"]"
+           asp-route-open="@ViewData["OpenIsChecked"]"
+           asp-route-pageNumber="@(Model.Tickets.PageIndex + 3)"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">@(Model.Tickets.PageIndex + 3)</span>
+        </a>
+    }
+</div>

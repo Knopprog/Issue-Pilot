@@ -1,0 +1,87 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>aspnet-IssuePilot-96F241C3-169D-4B0C-A1F9-77E601FDC463</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20211214153140_Model4.cs" />
+    <Compile Remove="Migrations\20211214153140_Model4.Designer.cs" />
+    <Compile Remove="Migrations\20211214153507_Model4.cs" />
+    <Compile Remove="Migrations\20211214153507_Model4.Designer.cs" />
+    <Compile Remove="Migrations\20211214154043_Model5.cs" />
+    <Compile Remove="Migrations\20211214154043_Model5.Designer.cs" />
+    <Compile Remove="Migrations\20211214154228_Model5.cs" />
+    <Compile Remove="Migrations\20211214154228_Model5.Designer.cs" />
+    <Compile Remove="Migrations\20211214154415_Model5.cs" />
+    <Compile Remove="Migrations\20211214154415_Model5.Designer.cs" />
+    <Compile Remove="Migrations\20211214154626_Model5.cs" />
+    <Compile Remove="Migrations\20211214154626_Model5.Designer.cs" />
+    <Compile Remove="Migrations\20211214154848_Model5.cs" />
+    <Compile Remove="Migrations\20211214154848_Model5.Designer.cs" />
+    <Compile Remove="Migrations\20211214155042_Model5.cs" />
+    <Compile Remove="Migrations\20211214155042_Model5.Designer.cs" />
+    <Compile Remove="Migrations\20211214155338_Model5.cs" />
+    <Compile Remove="Migrations\20211214155338_Model5.Designer.cs" />
+    <Compile Remove="Migrations\20211214155431_Model5.cs" />
+    <Compile Remove="Migrations\20211214155431_Model5.Designer.cs" />
+    <Compile Remove="Migrations\20211214155616_Model5.cs" />
+    <Compile Remove="Migrations\20211214155616_Model5.Designer.cs" />
+    <Compile Remove="Migrations\20211214155837_Model5.cs" />
+    <Compile Remove="Migrations\20211214155837_Model5.Designer.cs" />
+    <Compile Remove="Migrations\20211214160532_model5.cs" />
+    <Compile Remove="Migrations\20211214160532_model5.Designer.cs" />
+    <Compile Remove="Migrations\20211215093649_Model7.cs" />
+    <Compile Remove="Migrations\20211215093649_Model7.Designer.cs" />
+    <Compile Remove="Migrations\20211215094109_Model7.cs" />
+    <Compile Remove="Migrations\20211215094109_Model7.Designer.cs" />
+    <Compile Remove="Migrations\20211215105301_Model9.cs" />
+    <Compile Remove="Migrations\20211215105301_Model9.Designer.cs" />
+    <Compile Remove="Migrations\20211215124441_Model11.cs" />
+    <Compile Remove="Migrations\20211215124441_Model11.Designer.cs" />
+    <Compile Remove="Migrations\20220701065334_Model17.cs" />
+    <Compile Remove="Migrations\20220701065334_Model17.Designer.cs" />
+    <Compile Remove="Migrations\20220711162749_Model17.cs" />
+    <Compile Remove="Migrations\20220711162749_Model17.Designer.cs" />
+    <Compile Remove="Migrations\20220907120328_InitialMigration.cs" />
+    <Compile Remove="Migrations\20220907120328_InitialMigration.Designer.cs" />
+    <Compile Remove="Migrations\20220908125940_Model2.cs" />
+    <Compile Remove="Migrations\20220908125940_Model2.Designer.cs" />
+    <Compile Remove="Migrations\20220909084108_Model3.cs" />
+    <Compile Remove="Migrations\20220909084108_Model3.Designer.cs" />
+    <Compile Remove="Migrations\20220915074916_Model4.cs" />
+    <Compile Remove="Migrations\20220915074916_Model4.Designer.cs" />
+    <Compile Remove="Migrations\20220923085547_Model4.cs" />
+    <Compile Remove="Migrations\20220923085547_Model4.Designer.cs" />
+    <Compile Remove="Migrations\20220923104245_Model5.cs" />
+    <Compile Remove="Migrations\20220923104245_Model5.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\img\Dashboard.svg" />
+    <None Include="wwwroot\img\Search.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="bootstrap-select" Version="1.13.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGenerators.Mvc" Version="3.1.4" />
+  </ItemGroup>
+
+</Project>

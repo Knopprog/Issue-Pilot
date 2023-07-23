@@ -1,0 +1,151 @@
+﻿@model IssuePilot.Models.ViewModels.TicketEditViewModel
+
+@{
+    ViewData["Title"] = "Ticket bearbeiten";
+    ViewBag.Tab = "2";
+}
+<h4 class="text-nowrap">
+    <a class="back-link btn-slide rounded-pill pr-2 py-1" asp-action="Details" asp-route-id="@Model.Id">
+        <span class="icon-wrapper-clickable">
+            <svg class="back-icon" width="15" height="25" viewBox="0 0 15 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 24L3.83456 15.018C2.79432 13.8738 2.79432 12.1262 3.83456 10.982L12 2" stroke-width="4" />
+            </svg>
+        </span>
+        <span class="back-icon has-icon button-text">Ticket #@Html.DisplayFor(model => model.Id)</span>
+    </a>
+</h4>
+<h2 class="mt-4">Ticket bearbeiten</h2>
+<hr />
+<div class="row">
+    <div class="offset-xl-3 offset-md-2"></div>
+    <div class="col-xl-6 col-md-8">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            @for (int i = 0; i < Model.OldTicketCategories.Count; i++)
+            {
+                @Html.HiddenFor(model => Model.OldTicketCategories[i])
+            }
+            @if (Model.ImageList != null)
+            {
+                @for (int i = 0; i < Model.ImageList.Count; i++)
+                {
+                    @Html.HiddenFor(model => Model.ImageList[i].ImageData)
+                    @Html.HiddenFor(model => Model.ImageList[i].ImageId)
+
+                }
+            }
+            <div class="form-group">
+                <label asp-for="Title" class="control-label">Titel</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger text-break"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label">Beschreibung</label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+            </div>
+            <label class="control-label">Bilder zum Ticket hinzufügen oder entfernen</label>
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" multiple="multiple" id="file" accept="image/*" name="0" />
+                    <label class="custom-file-label btn-blue btn-slide btn-slide-blue one-line-limit" for="file" id="fileLabel">Bilder auswählen</label>
+                </div>
+            </div>
+            <div class="input-group">
+                <button class="btn text-nowrap btn-outline-border" type="button" id="resetImages">Auswahl entfernen</button>
+            </div>
+            <p id="num-of-files" class="text-center mt-2">Keine Bilder ausgewählt</p>
+            <div id="images" class="mb-4"></div>
+
+
+            @for (int i = 0; i < Model.ImageList.Count; i++)
+            {
+                <div class="form-group row col-md-9">
+                    <img class="uploaded-img" src="@Model.ImageList[i].ImageData" />
+                    <div class="custom-control custom-checkbox my-1 mr-sm-2 d-flex flex-row-reverse">
+                        <input asp-for="@Model.ImageList[i].IsSelected" type="checkbox" class="custom-control-input" id="@("a"+Model.ImageList[i].ImageId)">
+                        <label class="custom-control-label" for="@("a"+Model.ImageList[i].ImageId)">Bild löschen?</label>
+                    </div>
+                </div>
+            }
+            <div class="form-group mt-3">
+                <label asp-for="Deadline" class="control-label">Deadline</label>
+                @if (Model.Deadline != null)
+                {
+                    <input asp-for="Deadline" class="form-control" value="@Model.NonNullableDeadline.ToString("yyyy-MM-ddTHH:mm")" type="datetime-local" />
+                }
+                else
+                {
+                    <input asp-for="Deadline" class="form-control" type="datetime-local"/>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="Weight" class="control-label">Priorität</label>
+                <select asp-for="Weight" class="selectpicker form-control">
+                    <option value="0">Keine</option>
+                    <option value="1">Niedrig</option>
+                    <option value="2">Mittel</option>
+                    <option value="3">Hoch</option>
+                </select>
+            </div>
+            <label class="control-label">Kategorien</label>
+            <div class="form-group">
+                <select asp-for="SelectedTicketCategories" class="selectpicker form-control" asp-items="Model.CategoriesOfProject" multiple data-live-search="true"></select>
+            </div>
+            <div class="form-group">
+                <div class="form-group mt-5 text-right">
+                    <button type="submit" style="min-width:60px" class="text-nowrap btn btn-blue btn-slide btn-slide-blue">Speichern</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script>
+    document.getElementById("resetImages").onclick = function () {
+        uploadField.value = "";
+        document.getElementById("num-of-files").textContent = 'Keine Bilder ausgewählt';
+        document.getElementById("images").innerHTML = '';
+    };
+</script>
+<script>
+    let fileInput = document.getElementById("file");
+    let imageContainer = document.getElementById("images");
+    let numOfFiles = document.getElementById("num-of-files");
+    var uploadField = document.getElementById("file");
+    uploadField.onchange = function () {
+        if (parseInt(this.name) + parseInt($("input[type='file']").get(0).files.length) > 10) {
+            this.value = "";
+            alert("Ein Ticket darf nicht mehr als 10 Bilder haben!");
+        } else {
+            for (f of this.files) {
+                if (f.size > 4194304) {
+                    this.value = "";
+                    alert("Mindestens ein Bild ist zu groß! (>4mb)");
+                }
+            }
+            imageContainer.innerHTML = "";
+            if (fileInput.files.length == 1) {
+                numOfFiles.textContent = `${fileInput.files.length} Bild ausgewählt`;
+            } else {
+                numOfFiles.textContent = `${fileInput.files.length} Bilder ausgewählt`;
+            }
+            for (i of fileInput.files) {
+                let reader = new FileReader();
+                let figure = document.createElement("figure");
+                let figCap = document.createElement("figcaption");
+                figCap.innerText = i.name;
+                figure.appendChild(figCap);
+                reader.onload = () => {
+                    let img = document.createElement("img");
+                    img.setAttribute("src", reader.result);
+                    img.setAttribute("class", "uploaded-img");
+                    figure.insertBefore(img, figCap);
+                }
+                imageContainer.appendChild(figure);
+                reader.readAsDataURL(i);
+            }
+        }
+    };
+</script>

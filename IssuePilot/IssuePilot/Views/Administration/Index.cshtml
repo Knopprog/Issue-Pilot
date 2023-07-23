@@ -1,0 +1,157 @@
+﻿@using IssuePilot.Helper;
+@model PaginatedList<IssuePilot.Models.DBModels.User>
+
+@{
+    ViewData["Title"] = "Benutzer";
+    ViewBag.Tab = "3";
+}
+
+@if (User.IsInRole("Admin"))
+{
+    <div class="text-right">
+        <a style="min-width:60px" class="text-nowrap btn btn-slide btn-slide-blue btn-blue mb-3 mb-lg-1" asp-action="Create">+ Benutzer</a>
+    </div>
+}
+else
+{
+    <div class="mt-5"></div>
+}
+<div class="justify-content-center mb-4">
+    <form class="col-lg-6 offset-lg-3" asp-action="Index" asp-route-sortOrder="@ViewData["CurrentSort"]">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <button class="btn btn-search rounded-pill-left border-right-0">
+                    <img src="~/img/Search.svg" />
+                </button>
+            </div>
+            <input class="form-control rounded-pill-right" placeholder="Suchen..." type="search" name="SearchString" value="@ViewData["CurrentFilter"]" data-toggle="tooltip" data-placement="top" title="Nach Nutzernamen suchen" />
+        </div>
+    </form>
+</div>
+
+<table class="table text-break shadow-card-lg">
+    <thead>
+        <tr>
+            <th scope="col" class="col-3 border-top-0">
+                <a class="hover-text-icon btn rounded-pill pl-2 py-1" asp-action="Index" asp-route-sortOrder="@ViewData["UserNameSortParm"]">
+                    Nutzername
+                    <div class="icon baseline">
+                        <svg viewBox="0 0 20 5" fill="none">
+                            <path id="icon-fill-blue" d="M12.6916 1C13.5671 1 14.0199 2.04532 13.4211 2.68398L8.22886 8.22186C7.83376 8.64325 7.16483 8.64322 6.76978 8.22179L1.57851 2.68391C0.979808 2.04523 1.43266 1 2.30808 1H12.6916Z" fill="#464c50" />
+                        </svg>
+                    </div>
+                </a>
+            </th>
+            <th scope="col" class="col-3 border-top-0">
+                <a class="hover-text-icon btn rounded-pill pl-2 py-1" asp-action="Index" asp-route-sortOrder="@ViewData["EmailSortParm"]">
+                    E-Mail
+                    <div class="icon baseline">
+                        <svg viewBox="0 0 20 5" fill="none">
+                            <path id="icon-fill-blue" d="M12.6916 1C13.5671 1 14.0199 2.04532 13.4211 2.68398L8.22886 8.22186C7.83376 8.64325 7.16483 8.64322 6.76978 8.22179L1.57851 2.68391C0.979808 2.04523 1.43266 1 2.30808 1H12.6916Z" fill="#464c50" />
+                        </svg>
+                    </div>
+                </a>
+            </th>
+            <th scope="col" class="col-3 border-top-0">
+                <a class="hover-text-icon btn rounded-pill pl-2 py-1" asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">
+                    Erstellungsdatum
+                    <div class="icon baseline">
+                        <svg viewBox="0 0 20 5" fill="none">
+                            <path id="icon-fill-blue" d="M12.6916 1C13.5671 1 14.0199 2.04532 13.4211 2.68398L8.22886 8.22186C7.83376 8.64325 7.16483 8.64322 6.76978 8.22179L1.57851 2.68391C0.979808 2.04523 1.43266 1 2.30808 1H12.6916Z" fill="#464c50" />
+                        </svg>
+                    </div>
+                </a>
+            </th>
+            <th scope="col" class="col-3 border-top-0"></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => user.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => user.CreateDate)
+                </td>
+                <td>
+                    @* Edit und Delete nur anzeigen, wenn der Benutzer nicht gelöscht wurde.*@
+                    @if (User.IsInRole("Admin") && user.IsDeleted == false)
+                    {
+                        <a class="btn btn-outline-primary text-nowrap mb-1 mb-lg-0" style="width:auto" asp-action="Edit" asp-route-id="@user.Id">Bearbeiten</a>
+                        <a class="btn btn-outline-primary text-nowrap" style="width:auto" asp-action="Delete" asp-route-id="@user.Id">Löschen</a>
+                    }
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevWrapper = !Model.HasPreviousPage ? "" : "underline-hover-wrapper";
+    var prevUnderline = !Model.HasPreviousPage ? "gradient-underline" : "underline-hover";
+}
+<div class="mb-md-3 mb-lg-4 mb-2"></div>
+<div class="text-center mb-5">
+    @if (Model.PageIndex > 2)
+    {
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           asp-route-pageNumber="1"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">1</span>
+        </a>
+        <span>...</span>
+    }
+
+    @if (Model.PageIndex > 1)
+    {
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           class="tab-link @prevWrapper">
+            <span class="@prevUnderline">@(Model.PageIndex - 1)</span>
+        </a>
+    }
+    <a class="tab-link">
+        <span class="gradient-underline">@Model.PageIndex</span>
+    </a>
+    @if (Model.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">@(Model.PageIndex + 1)</span>
+        </a>
+    }
+    @if (Model.TotalPages > Model.PageIndex + 1)
+    {
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           asp-route-pageNumber="@(Model.PageIndex + 2)"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">@(Model.PageIndex + 2)</span>
+        </a>
+    }
+    @if (Model.TotalPages > Model.PageIndex + 2)
+    {
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           asp-route-pageNumber="@(Model.PageIndex + 3)"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">@(Model.PageIndex + 3)</span>
+        </a>
+    }
+</div>

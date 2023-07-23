@@ -1,0 +1,181 @@
+﻿@model IssuePilot.Models.ViewModels.Statistics.StatisticsDetailsViewModel
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<script src="~/lib/fullcalendar/main.js"></script>
+<link href="~/lib/fullcalendar/main.css" rel="stylesheet" />
+<script src="~/lib/fullcalendar/locales-all.js"></script>
+<script src="~/js/statisticsDetails.js"></script>
+<script src="~/js/calendarDetails.js"></script>
+
+<!-- Quelle: https://www.c-sharpcorner.com/article/creating-charts-with-asp-net-core/  -->
+
+<script>
+    /* diagramm */
+    var XLabelsStatus = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ListNumbersOfTicketStatus.Select(x => x.StatusName).ToList()));
+    var YValuesStatus = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ListNumbersOfTicketStatus.Select(x => x.NumberOfTicketsWithStatus).ToList()));
+
+    var XLabelsCategory = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ListNumberOfTimesCategoryWasUsed.Select(x => x.NameOfCategory).ToList()));
+    var YValuesCategory = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ListNumberOfTimesCategoryWasUsed.Select(x => x.NumberOfCategoryUses).ToList()));
+
+    var XLabelsTicketCreated = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ListNumberOfCreatedTicketsByUsers.Select(x => x.UserName).ToList()));
+    var YValuesTicketCreated = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ListNumberOfCreatedTicketsByUsers.Select(x => x.NumberOfTickets).ToList()));
+</script>
+
+@{
+    ViewData["Title"] = "Statistik";
+    ViewBag.Tab = "4";
+}
+
+<div class="row justify-content-between mx-0">
+    <h4 class="text-break">
+        <a class="back-link btn-slide rounded-pill pr-2 py-1" asp-action="Index" asp-controller="Statistics">
+            <span class="icon-wrapper-clickable">
+                <svg class="back-icon" width="15" height="25" viewBox="0 0 15 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 24L3.83456 15.018C2.79432 13.8738 2.79432 12.1262 3.83456 10.982L12 2" stroke-width="4" />
+                </svg>
+            </span>
+            <span class="back-icon has-icon button-text">Projekte</span>
+        </a>
+    </h4>
+</div>
+
+<h2 class="text-break mt-4 mb-4">
+    @Html.DisplayFor(model => model.ProjectTitle)
+</h2>
+
+<div>
+    <a class="tab-link" asp-route-id="@Model.Id"><span class="gradient-underline">Details</span></a>
+    <a class="tab-link underline-hover-wrapper" asp-action="Calendar" asp-controller="Statistics" asp-route-id="@Model.Id"><span class="underline-hover">Kalender</span></a>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card shadow-card-lg mb-3 border-0">
+            <h5 class="card-header">Daten</h5>
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th class="border-0">
+                                Anzahl Mitglieder:
+                            </th>
+                            <td class="border-0">
+                                @Model.NumberOfMembers
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Anzahl hinzugefügter Tickets:
+                            </th>
+                            <td>
+                                @Model.NumberOfTicketsCreated
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Anzahl gelöschter Tickets:
+                            </th>
+                            <td>
+                                @Model.NumberOfDeletedTickets
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Anzahl an Tickets, welche die Deadline verpasst haben:
+                            </th>
+                            <td>
+                                @Model.NumberOfTicketsPastDeadline
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Durchschnittliche Bearbeitungszeit eines Tickets:
+                            </th>
+                            <td>
+                                @if (Model.AVGProcessingTimeOfTickets.Days == 1)
+                                {
+                                    <text>1 Tag, </text>
+                                }
+                                else
+                                {
+                                    @string.Format("{0} Tage, ", Model.AVGProcessingTimeOfTickets.Days);
+                                }
+                                @string.Format("{0:00}:{1:00}", Model.AVGProcessingTimeOfTickets.Hours, Model.AVGProcessingTimeOfTickets.Minutes)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card shadow-card-lg mb-3 border-0">
+            <h5 class="card-header">Wer hat die meisten Tickets hinzugefügt?</h5>
+            <div class="card-body">
+                <div class="box-body">
+                    <div class="chart-container">
+                        <canvas id="TicketCreated" style=" height:400px"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-card-lg mb-3">
+    <h5 class="card-header">Rangliste zugeteilter Tickets</h5>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="border-top-0">
+                        Benutzer
+                    </th>
+                    <th class="border-top-0">
+                        Tickets zugeordnet
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.ListNumberOfTicketsAssignedToUser)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => user.UserName)
+                        </td>
+                        <td>
+                            @user.NumberOfTickets
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card border-0 shadow-card-lg mb-3">
+            <h5 class="card-header">Aufschlüsselung verwendeter Kategorien</h5>
+            <div class="box-body card-body">
+                <div class="chart-container">
+                    <canvas id="Category" style="width:100%; height:400px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card border-0 shadow-card-lg mb-3">
+            <h5 class="card-header">Aufschlüsselung nach Status</h5>
+            <div class="box-body card-body">
+                <div class="chart-container">
+                    <canvas id="Status" style="width:100%; height:400px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

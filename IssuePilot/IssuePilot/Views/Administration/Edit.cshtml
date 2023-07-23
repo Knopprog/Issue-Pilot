@@ -1,0 +1,70 @@
+﻿@model IssuePilot.Models.ViewModels.AdministrationEditViewModel
+
+@{
+    ViewData["Title"] = "Benutzer bearbeiten";
+    ViewBag.Tab = "3";
+}
+<div class="row justify-content-between mx-0">
+    <h4 class="text-nowrap">
+        <a class="back-link btn-slide rounded-pill pr-2 py-1" asp-action="Index">
+            <span class="icon-wrapper-clickable">
+                <svg class="back-icon" width="15" height="25" viewBox="0 0 15 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 24L3.83456 15.018C2.79432 13.8738 2.79432 12.1262 3.83456 10.982L12 2" stroke-width="4" />
+                </svg>
+            </span> <span class="back-icon has-icon button-text">Benutzer</span>
+        </a>
+    </h4>
+    <span>
+        <a style="min-width:60px" class="text-nowrap btn btn-slide btn-slide-blue btn-blue align-self-center ml-2" asp-action="ChangePassword" asp-route-id="@Model.Id">Passwort ändern</a>
+    </span>
+</div>
+<h2 class="mt-4">
+    Benutzer bearbeiten
+</h2>
+<hr />
+<div class="row">
+    <div class="offset-xl-4 offset-md-3 offset-sm-1"></div>
+    <div class="col-xl-4 col-md-6 col-sm-10">
+        <form asp-action="Edit" autocomplete="off">
+            <div asp-validation-summary="ModelOnly" class="text-danger text-break"></div>
+            <input type="hidden" asp-for="Id" />
+                    
+            <div class="form-group">
+                <label >Nutzername</label>
+                    <input type="text" readonly class="form-control" value="@Html.DisplayFor(model => model.UserName)">
+            </div>
+            <div class="form-group">
+                <label asp-for="Firstname" class="control-label"></label>
+                <input asp-for="Firstname" class="form-control" />
+                <span asp-validation-for="Firstname" class="text-danger text-break"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Surname" class="control-label"></label>
+                <input asp-for="Surname" class="form-control" />
+                <span asp-validation-for="Surname" class="text-danger text-break"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" autocomplete="off" />
+                <span asp-validation-for="Email" class="text-danger text-break"></span>
+            </div>
+
+            <label>Benutzerrolle ändern (@Html.DisplayFor(model => model.CurrentRole))</label>
+            <input type="hidden" asp-for="CurrentRole" />
+            <select asp-for="Role" class="form-control selectpicker">
+                <option>keine Änderung</option>
+                <option>Benutzer</option>
+                <option>Projektmanager</option>
+                <option>Admin</option>
+            </select>
+            <div class="form-group mt-5 text-right">
+                <button type="submit" style="min-width:60px" class="text-nowrap btn btn-blue btn-slide btn-slide-blue">Speichern</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

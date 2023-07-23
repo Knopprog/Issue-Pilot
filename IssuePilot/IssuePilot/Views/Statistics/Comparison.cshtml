@@ -1,0 +1,488 @@
+﻿@model IssuePilot.Models.ViewModels.Statistics.ComparisonViewModel
+
+@{
+    ViewData["Title"] = "Projektvergleich";
+    ViewBag.Tab = "4";
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<script src="~/lib/fullcalendar/main.js"></script>
+<link href="~/lib/fullcalendar/main.css" rel="stylesheet" />
+<script src="~/lib/fullcalendar/locales-all.js"></script>
+
+<script src="~/js/statisticsComparison.js"></script>
+
+
+<script>
+    /* diagramm */
+    var XLabelsStatusFirst = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.StatisticsModelFirst.ListNumbersOfTicketStatus.Select(x => x.StatusName).ToList()));
+    var YValuesStatusFirst = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.StatisticsModelFirst.ListNumbersOfTicketStatus.Select(x => x.NumberOfTicketsWithStatus).ToList()));
+
+    var XLabelsCategoryFirst = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.StatisticsModelFirst.ListNumberOfTimesCategoryWasUsed.Select(x => x.NameOfCategory).ToList()));
+    var YValuesCategoryFirst = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.StatisticsModelFirst.ListNumberOfTimesCategoryWasUsed.Select(x => x.NumberOfCategoryUses).ToList()));
+
+    var XLabelsTicketCreatedFirst = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.StatisticsModelFirst.ListNumberOfCreatedTicketsByUsers.Select(x => x.UserName).ToList()));
+    var YValuesTicketCreatedFirst = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.StatisticsModelFirst.ListNumberOfCreatedTicketsByUsers.Select(x => x.NumberOfTickets).ToList()));
+
+    var XLabelsStatusSecond = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.StatisticsModelSecond.ListNumbersOfTicketStatus.Select(x => x.StatusName).ToList()));
+    var YValuesStatusSecond = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.StatisticsModelSecond.ListNumbersOfTicketStatus.Select(x => x.NumberOfTicketsWithStatus).ToList()));
+
+    var XLabelsCategorySecond = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.StatisticsModelSecond.ListNumberOfTimesCategoryWasUsed.Select(x => x.NameOfCategory).ToList()));
+    var YValuesCategorySecond = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.StatisticsModelSecond.ListNumberOfTimesCategoryWasUsed.Select(x => x.NumberOfCategoryUses).ToList()));
+
+    var XLabelsTicketCreatedSecond = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.StatisticsModelSecond.ListNumberOfCreatedTicketsByUsers.Select(x => x.UserName).ToList()));
+    var YValuesTicketCreatedSecond = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.StatisticsModelSecond.ListNumberOfCreatedTicketsByUsers.Select(x => x.NumberOfTickets).ToList()));
+</script>
+
+<div class="row justify-content-between mx-0">
+    <h4 class="text-break">
+        <a class="back-link btn-slide rounded-pill pr-2 py-1" asp-action="Index" asp-controller="Statistics">
+            <span class="icon-wrapper-clickable">
+                <svg class="back-icon" width="15" height="25" viewBox="0 0 15 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 24L3.83456 15.018C2.79432 13.8738 2.79432 12.1262 3.83456 10.982L12 2" stroke-width="4" />
+                </svg>
+            </span>
+            <span class="back-icon has-icon button-text">Projekte</span>
+        </a>
+    </h4>
+</div>
+
+@{
+    int memberDif = Model.StatisticsModelFirst.NumberOfMembers - Model.StatisticsModelSecond.NumberOfMembers;
+    int addedTicketsDif = Model.StatisticsModelFirst.NumberOfTicketsCreated - Model.StatisticsModelSecond.NumberOfTicketsCreated;
+    int deletedTicketsDif = Model.StatisticsModelFirst.NumberOfDeletedTickets - Model.StatisticsModelSecond.NumberOfDeletedTickets;
+    int deadlineDif = Model.StatisticsModelFirst.NumberOfTicketsPastDeadline - Model.StatisticsModelSecond.NumberOfTicketsPastDeadline;
+
+}
+
+<h2 class="text-break mt-4 mb-4 text-center">Projektevergleich</h2>
+<div class="d-md-flex h-md-100 align-items-baseline row">
+    <div class="col-md-6 h-md-100">
+        <h3 class="text-break">@Model.StatisticsModelFirst.ProjectTitle</h3>
+        <hr />
+    </div>
+    <div class="col-md-6 col-12">
+        <h3 class="text-break">@Model.StatisticsModelSecond.ProjectTitle</h3>
+        <hr />
+    </div>
+    <div class="col-sm-6 col-12">
+        <div class="card shadow-card-lg mb-3 border-0">
+            <h5 class="card-header">Daten</h5>
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th class="border-0">
+                                Anzahl Mitglieder:
+                            </th>
+                            <td class="text-nowrap border-0">
+                                @Model.StatisticsModelFirst.NumberOfMembers
+                                @if (memberDif > 0)
+                                {
+                                    <span class="green">(+@memberDif)</span>
+                                }
+                                @if (memberDif < 0)
+                                {
+                                    <span class="red">(@memberDif)</span>
+                                }
+                                @if (memberDif == 0)
+                                {
+                                    <span>(0)</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Anzahl hinzugefügter Tickets:
+                            </th>
+                            <td class="text-nowrap">
+                                @Model.StatisticsModelFirst.NumberOfTicketsCreated
+                                @if (addedTicketsDif > 0)
+                                {
+                                    <span class="green">(+@addedTicketsDif)</span>
+                                }
+                                @if (addedTicketsDif < 0)
+                                {
+                                    <span class="red">(@addedTicketsDif)</span>
+                                }
+                                @if (addedTicketsDif == 0)
+                                {
+                                    <span>(0)</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Anzahl gelöschter Tickets:
+                            </th>
+                            <td class="text-nowrap">
+                                @Model.StatisticsModelFirst.NumberOfDeletedTickets
+                                @if (deletedTicketsDif > 0)
+                                {
+                                    <span class="green">(+@deletedTicketsDif)</span>
+                                }
+                                @if (deletedTicketsDif < 0)
+                                {
+                                    <span class="red">(@deletedTicketsDif)</span>
+                                }
+                                @if (deletedTicketsDif == 0)
+                                {
+                                    <span>(0)</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Anzahl von Tickets, welche die Deadline verpasst haben:
+                            </th>
+                            <td class="text-nowrap">
+                                @Model.StatisticsModelFirst.NumberOfTicketsPastDeadline
+                                @if (deadlineDif > 0)
+                                {
+                                    <span class="red">(+@deadlineDif)</span>
+                                }
+                                @if (deadlineDif < 0)
+                                {
+                                    <span class="green">(@deadlineDif)</span>
+                                }
+                                @if (deadlineDif == 0)
+                                {
+                                    <span>(0)</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Durchschnittliche Bearbeitungszeit eines Tickets:
+                            </th>
+                            <td class="text-nowrap">
+                                @if (Model.StatisticsModelFirst.AVGProcessingTimeOfTickets > Model.StatisticsModelSecond.AVGProcessingTimeOfTickets)
+                                {
+                                    <span class="red">
+                                        @if (Model.StatisticsModelFirst.AVGProcessingTimeOfTickets.Days == 1)
+                                        {
+                                            <text>1 Tag, </text>
+                                        }
+                                        else
+                                        {
+                                            @string.Format("{0} Tage, ", Model.StatisticsModelFirst.AVGProcessingTimeOfTickets.Days);
+                                        }
+                                        @string.Format("{0:00}:{1:00}", Model.StatisticsModelFirst.AVGProcessingTimeOfTickets.Hours, Model.StatisticsModelFirst.AVGProcessingTimeOfTickets.Minutes)
+                                    </span>
+                                }
+                                @if (Model.StatisticsModelFirst.AVGProcessingTimeOfTickets < Model.StatisticsModelSecond.AVGProcessingTimeOfTickets)
+                                {
+                                    <span class="green">
+
+                                        @if (Model.StatisticsModelFirst.AVGProcessingTimeOfTickets.Days == 1)
+                                        {
+                                            <text>1 Tag, </text>
+                                        }
+                                        else
+                                        {
+                                            @string.Format("{0} Tage, ", Model.StatisticsModelFirst.AVGProcessingTimeOfTickets.Days);
+                                        }
+                                        @string.Format("{0:00}:{1:00}", Model.StatisticsModelFirst.AVGProcessingTimeOfTickets.Hours, Model.StatisticsModelFirst.AVGProcessingTimeOfTickets.Minutes)
+                                    </span>
+                                }
+
+
+                                @if (Model.StatisticsModelFirst.AVGProcessingTimeOfTickets == Model.StatisticsModelSecond.AVGProcessingTimeOfTickets)
+                                {
+                                    @if (Model.StatisticsModelFirst.AVGProcessingTimeOfTickets.Days == 1)
+                                    {
+                                        <text>1 Tag, </text>
+                                    }
+                                    else
+                                    {
+                                        @string.Format("{0} Tage, ", Model.StatisticsModelFirst.AVGProcessingTimeOfTickets.Days);
+                                    }
+                                    @string.Format("{0:00}:{1:00}", Model.StatisticsModelFirst.AVGProcessingTimeOfTickets.Hours, Model.StatisticsModelFirst.AVGProcessingTimeOfTickets.Minutes)
+                                }
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-12">
+        <div class="card shadow-card-lg mb-3 border-0">
+            <h5 class="card-header">Daten</h5>
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th class="border-0">
+                                Anzahl Mitglieder:
+                            </th>
+                            <td class="text-nowrap border-0">
+                                @Model.StatisticsModelSecond.NumberOfMembers
+                                @if (memberDif > 0)
+                                {
+                                    <span class="red">(-@memberDif)</span>
+                                }
+                                @if (memberDif < 0)
+                                {
+                                    <span class="green">(+@Math.Abs(memberDif))</span>
+                                }
+                                @if (memberDif == 0)
+                                {
+                                    <span>(0)</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Anzahl hinzugefügter Tickets:
+                            </th>
+                            <td class="text-nowrap">
+                                @Model.StatisticsModelSecond.NumberOfTicketsCreated
+                                @if (addedTicketsDif > 0)
+                                {
+                                    <span class="red">(-@addedTicketsDif)</span>
+                                }
+                                @if (addedTicketsDif < 0)
+                                {
+                                    <span class="green">(+@Math.Abs(@addedTicketsDif))</span>
+                                }
+                                @if (addedTicketsDif == 0)
+                                {
+                                    <span>(0)</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Anzahl gelöschter Tickets:
+                            </th>
+                            <td class="text-nowrap">
+                                @Model.StatisticsModelSecond.NumberOfDeletedTickets
+                                @if (deletedTicketsDif > 0)
+                                {
+                                    <span class="red">(-@deletedTicketsDif)</span>
+                                }
+                                @if (deletedTicketsDif < 0)
+                                {
+                                    <span class="green">(+@Math.Abs(@deletedTicketsDif))</span>
+                                }
+                                @if (deletedTicketsDif == 0)
+                                {
+                                    <span>(0)</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Anzahl von Tickets, welche die Deadline verpasst haben:
+                            </th>
+                            <td class="text-nowrap">
+                                @Model.StatisticsModelSecond.NumberOfTicketsPastDeadline
+                                @if (deadlineDif > 0)
+                                {
+                                    <span class="red">(-@deadlineDif)</span>
+                                }
+                                @if (deadlineDif < 0)
+                                {
+                                    <span class="green">(+@Math.Abs(@deadlineDif))</span>
+                                }
+                                @if (deadlineDif == 0)
+                                {
+                                    <span>(0)</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Durchschnittliche Bearbeitungszeit eines Tickets:
+                            </th>
+                            <td class="text-nowrap">
+                                @if (Model.StatisticsModelFirst.AVGProcessingTimeOfTickets > Model.StatisticsModelSecond.AVGProcessingTimeOfTickets)
+                                {
+                                    <span class="green">
+                                        @if (Model.StatisticsModelSecond.AVGProcessingTimeOfTickets.Days == 1)
+                                        {
+                                            <text>1 Tag, </text>
+                                        }
+                                        else
+                                        {
+                                            @string.Format("{0} Tage, ", Model.StatisticsModelSecond.AVGProcessingTimeOfTickets.Days);
+                                        }
+                                        @string.Format("{0:00}:{1:00}", Model.StatisticsModelSecond.AVGProcessingTimeOfTickets.Hours, Model.StatisticsModelFirst.AVGProcessingTimeOfTickets.Minutes)
+                                    </span>
+                                }
+                                @if (Model.StatisticsModelFirst.AVGProcessingTimeOfTickets < Model.StatisticsModelSecond.AVGProcessingTimeOfTickets)
+                                {
+                                    <span class="red">
+
+                                        @if (Model.StatisticsModelSecond.AVGProcessingTimeOfTickets.Days == 1)
+                                        {
+                                            <text>1 Tag, </text>
+                                        }
+                                        else
+                                        {
+                                            @string.Format("{0} Tage, ", Model.StatisticsModelSecond.AVGProcessingTimeOfTickets.Days);
+                                        }
+                                        @string.Format("{0:00}:{1:00}", Model.StatisticsModelSecond.AVGProcessingTimeOfTickets.Hours, Model.StatisticsModelFirst.AVGProcessingTimeOfTickets.Minutes)
+                                    </span>
+                                }
+
+
+                                @if (Model.StatisticsModelFirst.AVGProcessingTimeOfTickets == Model.StatisticsModelSecond.AVGProcessingTimeOfTickets)
+                                {
+                                    @if (Model.StatisticsModelSecond.AVGProcessingTimeOfTickets.Days == 1)
+                                    {
+                                        <text>1 Tag, </text>
+                                    }
+                                    else
+                                    {
+                                        @string.Format("{0} Tage, ", Model.StatisticsModelSecond.AVGProcessingTimeOfTickets.Days);
+                                    }
+                                    @string.Format("{0:00}:{1:00}", Model.StatisticsModelSecond.AVGProcessingTimeOfTickets.Hours, Model.StatisticsModelSecond.AVGProcessingTimeOfTickets.Minutes)
+                                }
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-12">
+        <div class="card shadow-card-lg mb-3 border-0">
+            <h5 class="card-header">Wer hat die meisten Tickets hinzugefügt?</h5>
+            <div class="box-body">
+                <div class="chart-container">
+                    <canvas id="TicketCreatedFirst" style="width:100%; height:400px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-12">
+        <div class="card shadow-card-lg mb-3 border-0">
+            <h5 class="card-header">Wer hat die meisten Tickets hinzugefügt?</h5>
+            <div class="box-body">
+                <div class="chart-container">
+                    <canvas id="TicketCreatedSecond" style="width:100%; height:400px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-sm-6 col-12">
+        <div class="card border-0 shadow-card-lg mb-3">
+            <h5 class="card-header">Rangliste zugeteilter Tickets</h5>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="border-top-0">
+                                Benutzer
+                            </th>
+                            <th class="border-top-0">
+                                Tickets zugeordnet
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.StatisticsModelFirst.ListNumberOfTicketsAssignedToUser)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => user.UserName)
+                                </td>
+                                <td>
+                                    @user.NumberOfTickets
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-12">
+        <div class="card border-0 shadow-card-lg mb-3">
+            <h5 class="card-header">Rangliste zugeteilter Tickets</h5>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="border-top-0">
+                                Benutzer
+                            </th>
+                            <th class="border-top-0">
+                                Tickets zugeordnet
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.StatisticsModelSecond.ListNumberOfTicketsAssignedToUser)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => user.UserName)
+                                </td>
+                                <td>
+                                    @user.NumberOfTickets
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-12">
+        <div class="card border-0 shadow-card-lg mb-3">
+            <h5 class="card-header">Aufschlüsselung verwendeter Kategorien</h5>
+            <div class="box-body card-body">
+                <div class="chart-container">
+                    <canvas id="CategoryFirst" style="width:100%; height:400px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-12">
+        <div class="card border-0 shadow-card-lg mb-3">
+            <h5 class="card-header">Aufschlüsselung verwendeter Kategorien</h5>
+            <div class="box-body card-body">
+                <div class="chart-container">
+                    <canvas id="CategorySecond" style="width:100%; height:400px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-12">
+        <div class="card border-0 shadow-card-lg mb-3">
+            <h5 class="card-header">Aufschlüsselung nach Status</h5>
+            <div class="box-body card-body">
+                <div class="chart-container">
+                    <canvas id="StatusFirst" style="width:100%; height:400px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-12">
+        <div class="card border-0 shadow-card-lg mb-3">
+            <h5 class="card-header">Aufschlüsselung nach Status</h5>
+            <div class="box-body card-body">
+                <div class="chart-container">
+                    <canvas id="StatusSecond" style="width:100%; height:400px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

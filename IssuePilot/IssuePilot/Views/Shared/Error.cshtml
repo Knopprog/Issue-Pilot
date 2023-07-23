@@ -1,0 +1,23 @@
+﻿@model ErrorViewModel
+@{
+    string sc = Context.Request.Query.FirstOrDefault().Value.ToString();
+    if (sc.Length > 3)
+    {
+        sc = sc.Substring(0, 3);
+    }
+    ViewData["StatusCode"] = sc;
+    ViewData["Title"] = "Fehler - " + ViewData["StatusCode"];
+}
+<div class="text-center text-break mt-5  ">
+    <div class="col-6 mx-auto">
+        <h1 class="text-danger">Fehler @ViewData["StatusCode"]</h1>
+        <h4 class="mt-4">Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut oder kontaktieren Sie den Administrator.</h4>
+        @if (Model.ShowRequestId)
+        {
+            <p class="mt-2">
+                <strong>Request ID:</strong> <code>@Model.RequestId</code>
+            </p>
+        }
+        <a asp-controller="Dashboard" asp-action="Index" style="min-width:60px" class="text-nowrap btn btn-slide btn-slide-blue btn-blue mt-4">Verstanden!</a>
+    </div>
+</div>

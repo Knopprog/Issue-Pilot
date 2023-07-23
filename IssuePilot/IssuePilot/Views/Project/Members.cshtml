@@ -1,0 +1,266 @@
+﻿@model IssuePilot.Models.ViewModels.ProjectMembersViewModel
+
+@{
+    ViewData["Title"] = "Projektmitglieder";
+    ViewBag.Tab = "2";
+}
+<div class="row justify-content-between mx-0">
+    <h4 class="text-break">
+        <a class="back-link btn-slide rounded-pill pr-2 py-1" asp-action="Index" asp-controller="Project">
+            <span class="icon-wrapper-clickable">
+                <svg class="back-icon" width="15" height="25" viewBox="0 0 15 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 24L3.83456 15.018C2.79432 13.8738 2.79432 12.1262 3.83456 10.982L12 2" stroke-width="4" />
+                </svg>
+            </span> <span class="back-icon has-icon button-text">Projekte</span>
+        </a>
+    </h4>
+    <div>
+        @if (Model.IsMember)
+        {
+            <form method="post" class="d-inline-flex">
+                <button type="button" style="min-width:60px" class="text-nowrap btn btn-blue btn-slide btn-slide-blue ml-2 mb-2" data-toggle="modal" data-target="#Leave">Projekt verlassen</button>
+                <div class="modal fade" id="Leave" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content border-0">
+                            <div class="modal-header border-0">
+                                <h5 class="modal-title">Projekt verlassen</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body mr-4 ml-3">
+                                <p>Möchten Sie das Projekt wirklich verlassen?</p>
+                                <div class="text-right mt-4 form-group">
+                                    <button asp-action="LeaveProject" asp-route-projectId="@Model.Project.Id" type="submit" class="btn btn-danger">Verlassen</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        }
+
+        @if (Model.IsOwner == true || User.IsInRole("Admin"))
+        {
+            <div class="d-inline-flex">
+                <a style="min-width:60px" class="text-nowrap btn btn-slide btn-slide-blue btn-blue align-self-center ml-2 mb-2" asp-action="AddMember" asp-route-id="@Model.Project.Id">+ Mitglied</a>
+            </div>
+        }
+    </div>
+</div>
+
+<h2 class="text-break mt-4 mb-4">
+    @Html.DisplayFor(model => model.Project.Title)
+</h2>
+
+<div>
+    <a class="tab-link underline-hover-wrapper" asp-controller="Ticket" asp-action="Tickets" asp-route-id="@Model.Project.Id"><span class="underline-hover">Tickets</span></a>
+    <a class="tab-link" asp-action="Members" asp-controller="Project" asp-route-id="@Model.Project.Id"><span class="gradient-underline">Mitglieder</span></a>
+    <a class="tab-link underline-hover-wrapper" asp-action="Other" asp-controller="Project" asp-route-id="@Model.Project.Id"><span class="underline-hover">Weiteres</span></a>
+</div>
+<hr />
+<div class="justify-content-center mb-4">
+    <form class="col-lg-6 offset-lg-3" asp-action="Members" asp-route-sortOrder="@ViewData["CurrentSort"]">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <button class="btn btn-search rounded-pill-left border-right-0">
+                    <img src="~/img/Search.svg" />
+                </button>
+            </div>
+            <input class="form-control rounded-pill-right" placeholder="Suchen..." type="search" name="SearchString" value="@ViewData["CurrentFilter"]" data-toggle="tooltip" data-placement="top" title="Nach Nutzernamen suchen" />
+        </div>
+    </form>
+</div>
+
+<table class="table text-break shadow-card-lg">
+    <thead>
+        <tr style="border-bottom: 1px solid rgba(0,0,0,.125);">
+            <th scope="col" class="col-3 border-top-0">
+                <a class="hover-text-icon btn rounded-pill pl-2 py-1" asp-action="Members" asp-route-sortOrder="@ViewData["UserNameSortParm"]">
+                    Nutzername
+                    <div class="icon baseline">
+                        <svg viewBox="0 0 30 10" fill="none">
+                            <path id="icon-fill-blue" d="M12.6916 1C13.5671 1 14.0199 2.04532 13.4211 2.68398L8.22886 8.22186C7.83376 8.64325 7.16483 8.64322 6.76978 8.22179L1.57851 2.68391C0.979808 2.04523 1.43266 1 2.30808 1H12.6916Z" fill="#464c50" />
+                        </svg>
+                    </div>
+                </a>
+            </th>
+            <th scope="col" class="col-3 border-top-0">
+                <a class="hover-text-icon btn rounded-pill pl-2 py-1" asp-action="Members" asp-route-sortOrder="@ViewData["EmailSortParm"]">
+                    E-Mail
+                    <div class="icon baseline">
+                        <svg viewBox="0 0 30 10" fill="none">
+                            <path id="icon-fill-blue" d="M12.6916 1C13.5671 1 14.0199 2.04532 13.4211 2.68398L8.22886 8.22186C7.83376 8.64325 7.16483 8.64322 6.76978 8.22179L1.57851 2.68391C0.979808 2.04523 1.43266 1 2.30808 1H12.6916Z" fill="#464c50" />
+                        </svg>
+                    </div>
+                </a>
+            </th>
+            <th scope="col" class="col-3 border-top-0">
+                <a class="hover-text-icon btn rounded-pill pl-2 py-1" asp-action="Members" asp-route-sortOrder="@ViewData["RoleSortParm"]">
+                    Rolle
+                    <div class="icon baseline">
+                        <svg viewBox="0 0 30 10" fill="none">
+                            <path id="icon-fill-blue" d="M12.6916 1C13.5671 1 14.0199 2.04532 13.4211 2.68398L8.22886 8.22186C7.83376 8.64325 7.16483 8.64322 6.76978 8.22179L1.57851 2.68391C0.979808 2.04523 1.43266 1 2.30808 1H12.6916Z" fill="#464c50" />
+                        </svg>
+                    </div>
+                </a>
+            </th>
+            @if (Model.IsOwner == true)
+            {
+                    <th scope="col" class="col-3 border-top-0"></th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Members)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => user.User.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => user.User.Email)
+            </td>
+            <td>
+                @if (user.ProjectRole.Id == IssuePilot.Models.DBModels.ProjectRoleId.Owner)
+                {
+                    <span>Eigentümer/in</span>
+                }
+                else
+                {
+                    <span>Teilnehmer/in</span>
+                }
+            </td>
+            @if (Model.IsOwner == true)
+            {
+                
+        <td>
+            @if (user.ProjectRole.Id == IssuePilot.Models.DBModels.ProjectRoleId.Member || User.IsInRole("Admin") || (User.IsInRole("Projektmanager") && user.UserRole == "Benutzer") || user.User.Id == Model.UserId)
+            {
+                <form method="post" class="d-inline" asp-action="EditMember">
+                    <input type="hidden" asp-for="ProjectId" />
+                    <input type="hidden" asp-for="UserId" value="@user.User.Id" />
+                    <button type="button" style="min-width:60px" class="text-nowrap btn btn-outline-primary ml-2 my-1" data-toggle="modal" data-target="#b-@user.User.Id">
+                        Bearbeiten
+                    </button>
+                    <div class="modal fade" id="b-@user.User.Id" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content border-0">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title">Projektrolle ändern: @user.User.UserName</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body mx-5">
+                                    <div class="form-group">
+                                        <label class="control-label">Projektrolle auswählen</label>
+                                        @if (@user.ProjectRole.Id == IssuePilot.Models.DBModels.ProjectRoleId.Member)
+                                        {
+                                            <select asp-for="ProjectRoleId" class="form-control selectpicker">
+                                                <option value="0" selected>Teilnehmer/in</option>
+                                                <option value="1">Eigentümer/in</option>
+                                            </select>
+                                        }
+                                        @if (@user.ProjectRole.Id == IssuePilot.Models.DBModels.ProjectRoleId.Owner)
+                                        {
+                                            <select asp-for="ProjectRoleId" class="form-control selectpicker">
+                                                <option value="0">Teilnehmer/in</option>
+                                                <option value="1" selected>Eigentümer/in</option>
+                                            </select>
+                                        }
+                                    </div>
+                                    <div class="mt-5 form-group text-right">
+                                        <button type="submit" style="min-width:60px" class="text-nowrap btn btn-blue btn-slide btn-slide-blue">Speichern</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <form method="post" class="d-inline">
+                    <button type="button" style="min-width:60px" class="text-nowrap btn btn-outline-primary ml-2 my-1" data-toggle="modal" data-target="#e-@user.User.Id">
+                        Entfernen
+                    </button>
+                    <div class="modal fade" id="e-@user.User.Id" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content border-0">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title">Mitglied entfernen: @user.User.UserName</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body mr-4 ml-3">
+                                    <p>Sind Sie Sicher, dass Sie @user.User.UserName aus dem Projekt entfernen wollen?</p>
+                                    <div class="text-right mt-4 form-group">
+                                        <button asp-action="RemoveMember" asp-route-userId="@user.User.Id" asp-route-projectId="@Model.Project.Id" type="submit" class="btn btn-danger">Entfernen</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            }
+        </td>
+                
+
+            }
+        </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevWrapper = !Model.Members.HasPreviousPage ? "" : "underline-hover-wrapper";
+    var prevUnderline = !Model.Members.HasPreviousPage ? "gradient-underline" : "underline-hover";
+}
+<div class="mb-md-3 mb-lg-4 mb-2"></div>
+<div class="text-center mb-5">
+    @if (Model.Members.PageIndex > 2)
+    {
+        <a asp-action="Members"
+           asp-route-pageNumber="1"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">1</span>
+        </a>
+        <span>...</span>
+    }
+
+    @if (Model.Members.PageIndex > 1)
+    {
+        <a asp-action="Members"
+           asp-route-pageNumber="@(Model.Members.PageIndex - 1)"
+           class="tab-link @prevWrapper">
+            <span class="@prevUnderline">@(Model.Members.PageIndex - 1)</span>
+        </a>
+    }
+    <a class="tab-link">
+        <span class="gradient-underline">@Model.Members.PageIndex</span>
+    </a>
+    @if (Model.Members.HasNextPage)
+    {
+        <a asp-action="Members"
+           asp-route-pageNumber="@(Model.Members.PageIndex + 1)"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">@(Model.Members.PageIndex + 1)</span>
+        </a>
+    }
+    @if (Model.Members.TotalPages > Model.Members.PageIndex + 1)
+    {
+        <a asp-action="Members"
+           asp-route-pageNumber="@(Model.Members.PageIndex + 2)"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">@(Model.Members.PageIndex + 2)</span>
+        </a>
+    }
+    @if (Model.Members.TotalPages > Model.Members.PageIndex + 2)
+    {
+        <a asp-action="Members"
+           asp-route-pageNumber="@(Model.Members.PageIndex + 3)"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">@(Model.Members.PageIndex + 3)</span>
+        </a>
+    }
+</div>

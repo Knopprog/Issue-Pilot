@@ -1,0 +1,45 @@
+﻿@model IssuePilot.Models.ViewModels.ProjectUpdateViewModel
+
+@{
+    ViewData["Title"] = "Projekt erstellen";
+    ViewBag.Tab = "2";
+}
+    <h4 class="text-break">
+        <a class="back-link btn-slide rounded-pill pr-2 py-1" asp-action="Index">
+            <span class="icon-wrapper-clickable">
+                <svg class="back-icon" width="15" height="25" viewBox="0 0 15 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 24L3.83456 15.018C2.79432 13.8738 2.79432 12.1262 3.83456 10.982L12 2" stroke-width="4" />
+                </svg>
+            </span> <span class="back-icon has-icon button-text">Projekte</span>
+        </a>
+    </h4>
+    <h2 class="mt-4">Projekt erstellen</h2>
+    <hr />
+<div class="row">
+    <div class="offset-xl-3 offset-md-2"></div>
+    <div class="col-xl-6 col-md-8">
+        
+        <form asp-action="Create">
+            <div class="form-group">
+                <label asp-for="Title" class="control-label">Titel</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger text-break"></span>
+                @if (Model.TitleExists == true)
+                {
+                    <label class="text-danger text-break">Der Titel existiert bereits!</label>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label">Beschreibung</label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+            </div>
+            <div class="form-group mt-5 text-right">
+                <button type="submit" style="min-width:60px" class="text-nowrap btn btn-blue btn-slide btn-slide-blue">Erstellen</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

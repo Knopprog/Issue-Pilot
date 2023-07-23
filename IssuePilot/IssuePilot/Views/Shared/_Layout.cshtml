@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Issue Pilot</title>
+    <link href="~/img/Logo.svg" rel="shortcut icon" type="image/x-icon" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-select.min.css" />
+</head>
+<body>
+    <nav style="background-color: #f7fafb;" class="navbar p-0 navbar-expand-xl navbar-light sticky-top border-bottom mb-3">
+        <div class="container-fluid mt-1 mt-xl-0" style="padding-right: 15px; padding-left: 15px;">
+            <span>
+                <a class="navbar-brand m-0 mr-4" asp-area="" asp-controller="Dashboard" asp-action="Index"><img src="~/img/Logo.svg" /></a>
+                <a style="font-size: x-large" data-toggle="tooltip" data-placement="bottom" title="Ticket hinzufügen" data-delay='{"show":"500"}' class="text-nowrap btn btn-slide btn-slide-blue btn-blue align-self-center py-0" asp-controller="Ticket" asp-action="SelectProject">+</a>
+            </span>
+
+            <button class="navbar-toggler btn rounded-pill" type="button" data-toggle="collapse" data-target=".logout-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="navbar-collapse collapse d-block order-lg-2 order-2 order-xl-0 justify-content-end ml-lg-5 mb-1">
+                <ul class="navbar-nav justify-content-center">
+                    <li class="mt-1">
+                        <a data-toggle="tooltip" data-placement="bottom" title="Dashboard" data-delay='{"show":"500"}' class="@(ViewBag.Tab == "1" ? "btn-gradient" : "btn-slide btn-slide-gradient ") btn navbar-item" asp-area="" asp-controller="Dashboard" asp-action="Index">
+                            <svg class="icon-limit" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect id="navbar-icon-fill" width="9" height="7" rx="2" fill="white" />
+                                <rect id="navbar-icon-fill" x="11" width="9" height="12" rx="2" fill="white" />
+                                <rect id="navbar-icon-fill" y="8" width="9" height="12" rx="2" fill="white" />
+                                <rect id="navbar-icon-fill" x="11" y="13" width="9" height="7" rx="2" fill="white" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="mt-1">
+                        <a data-toggle="tooltip" data-placement="bottom" title="Projekte" data-delay='{"show":"500"}' class="@(ViewBag.Tab == "2" ? "btn-gradient" : "btn-slide btn-slide-gradient") btn navbar-item" asp-controller="Project" asp-action="Index">
+                            <svg class="icon-limit" width="33" height="23" viewBox="0 0 33 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path id="navbar-icon-fill" fill-rule="evenodd" clip-rule="evenodd" d="M3.00001 23L30 23C31.6569 23 33 21.6568 33 20V7C33 5.34314 31.6569 4 30 4L17 4C15.8954 4 15 3.10457 15 2C15 0.89543 14.1046 0 13 0H3C1.34315 0 0 1.34315 0 3L4.07697e-06 20C3.93212e-06 21.6568 1.34315 23 3.00001 23ZM8.92555 20.933H9.58881C9.60515 20.9334 9.62176 20.9336 9.63865 20.9336H24.1067V20.933C24.9312 20.933 25.2688 20.373 24.8568 19.6588C24.8568 19.6588 24.0175 18.2155 23.4281 17.1972L23.4221 17.1999L22.338 15.3221C22.3311 15.3094 22.3241 15.2967 22.3168 15.2842L17.8189 7.49444L17.2654 6.53574C17.2388 6.48967 17.2111 6.44658 17.1825 6.40645C16.7674 5.82447 16.1522 5.86747 15.7665 6.53548L13.7694 9.99429C13.7695 9.9943 13.7696 9.99432 13.7696 9.99434L13.2613 10.8748C13.2342 10.9138 13.2086 10.954 13.1847 10.9954L8.17594 19.6593C7.76368 20.373 8.10103 20.933 8.92555 20.933ZM12.4711 18.4007L15.8244 11.9544C16.2047 11.223 16.8425 11.2149 17.2415 11.9362L20.0791 17.0646C20.4574 17.7474 20.2258 18.312 19.5702 18.3689C19.5309 18.3702 19.4926 18.3709 19.4556 18.3708C18.7133 18.3695 17.748 17.8202 17.3108 17.1478C16.8738 16.4757 16.2226 16.4874 15.8639 17.1611C15.5052 17.8347 14.5371 18.3968 13.7129 18.3968H12.6113C12.5656 18.3968 12.5188 18.3981 12.4711 18.4007Z" fill="white" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="mt-1">
+                        <a data-toggle="tooltip" data-placement="bottom" title="Benutzer" data-delay='{"show":"500"}' class="@(ViewBag.Tab == "3" ? "btn-gradient" : "btn-slide btn-slide-gradient") btn navbar-item" asp-controller="Administration" asp-action="Index">
+                            <svg class="icon-limit" width="21" height="22" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path id="navbar-icon-stroke" d="M12 5.49998C12 7.98527 9.98528 10 7.5 10C5.01472 10 3 7.98527 3 5.49998C3 3.0147 5.01471 1 7.5 1C9.98529 1 12 3.0147 12 5.49998Z" stroke-width="2" />
+                                <path id="navbar-icon-fill" d="M4.5 13H7.50001H10.5C12.9853 13 15 15.0147 15 17.5V21C15 21.5523 14.5523 22 14 22C13.4477 22 13 21.5523 13 21V18.5C13 16.567 11.433 15 9.5 15H7.50001H4.45047C3.09711 15 2 16.0971 2 17.4505V21C2 21.5523 1.55228 22 1 22C0.447715 22 0 21.5523 0 21V17.5C0 15.0147 2.01472 13 4.5 13Z" />
+                                <path id="navbar-icon-fill" d="M16.125 13H18C19.6569 13 21 14.3431 21 16V21C21 21.5523 20.5523 22 20 22C19.4477 22 19 21.5523 19 21V18.625V17.25C19 16.1454 18.1046 15.25 17 15.25H16.125C15.5037 15.25 15 14.7463 15 14.125C15 13.5037 15.5037 13 16.125 13Z" />
+                                <path id="navbar-icon-fill" d="M18.5 5.29998C18.5 7.92335 17.0082 9.89399 14.991 10.3826C14.4542 10.5127 14 10.0523 14 9.49999C14 8.94771 14.4687 8.48694 14.9428 8.20358C15.7409 7.7265 16.5 6.69825 16.5 5.29998C16.5 3.9968 15.7638 2.949 14.9791 2.43836C14.493 2.12208 14 1.62989 14 1.05C14 0.470101 14.4781 -0.0139981 15.0386 0.134753C17.0317 0.663696 18.5 2.69729 18.5 5.29998Z" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="mt-1">
+                        <a data-toggle="tooltip" data-placement="bottom" title="Statistik" data-delay='{"show":"500"}' class="@(ViewBag.Tab == "4" ? "btn-gradient " : "btn-slide btn-slide-gradient") btn navbar-item" asp-controller="Statistics" asp-action="Index">
+                            <svg class="icon-limit" width="23" height="19" viewBox="0 0 23 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path id="navbar-icon-stroke" d="M22 18H3C1.89543 18 1 17.1046 1 16V9.5V1" stroke-width="2" stroke-linecap="round" />
+                                <path id="navbar-icon-stroke" d="M5 14L9.02705 9.4132C9.59741 8.76357 10.5206 8.55392 11.3156 8.89348L12.4471 9.37679C13.2421 9.71635 14.1653 9.5067 14.7357 8.85707L19 4" stroke-width="2" stroke-linecap="round" />
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <partial name="_LoginPartial" />
+        </div>
+    </nav>
+    
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @RenderSection("Scripts", required: false)
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap-select.min.js"></script>
+
+
+</body>
+</html>

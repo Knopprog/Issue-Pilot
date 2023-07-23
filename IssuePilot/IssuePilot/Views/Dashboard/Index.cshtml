@@ -1,0 +1,136 @@
+﻿@using IssuePilot.Helper;
+@using IssuePilot.Models.DBModels;
+@model PaginatedList<IssuePilot.Models.ViewModels.DashboardIndexViewModel>
+
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewBag.Tab = "1";
+}
+<div class="row">
+    <div class="offset-lg-3 offset-md-2"></div>
+    <div class="col-lg-6 col-md-8">
+        <div class="list-group shadow-card-lg">
+            @foreach (var item in Model)
+            {
+                
+                    <div class="list-group-item list-group-item-action flex-column align-items-start @(item.Seen == false ? "active" : "" ) p-0" style="font-family: Montserrat-Medium;">
+                        <a class="fill-div text-break" asp-action="@item.Action" asp-route-id="@item.RouteId" asp-controller="@item.Controller">
+                            <span class="row">
+                                <span class="col-1 p-0 text-center my-auto" style="flex-wrap: wrap;">
+                                    <span class="text-left">
+                                        @switch (item.EntryCaseId)
+                                        {
+                                            case IssuePilot.Models.DBModels.NewsEntryCaseId.AddedToProject:
+                                                <svg class="icon-limit align-top" width="33" height="23" viewBox="0 0 33 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path id="navbar-icon-fill" fill-rule="evenodd" clip-rule="evenodd" d="M3.00001 23L30 23C31.6569 23 33 21.6568 33 20V7C33 5.34314 31.6569 4 30 4L17 4C15.8954 4 15 3.10457 15 2C15 0.89543 14.1046 0 13 0H3C1.34315 0 0 1.34315 0 3L4.07697e-06 20C3.93212e-06 21.6568 1.34315 23 3.00001 23ZM8.92555 20.933H9.58881C9.60515 20.9334 9.62176 20.9336 9.63865 20.9336H24.1067V20.933C24.9312 20.933 25.2688 20.373 24.8568 19.6588C24.8568 19.6588 24.0175 18.2155 23.4281 17.1972L23.4221 17.1999L22.338 15.3221C22.3311 15.3094 22.3241 15.2967 22.3168 15.2842L17.8189 7.49444L17.2654 6.53574C17.2388 6.48967 17.2111 6.44658 17.1825 6.40645C16.7674 5.82447 16.1522 5.86747 15.7665 6.53548L13.7694 9.99429C13.7695 9.9943 13.7696 9.99432 13.7696 9.99434L13.2613 10.8748C13.2342 10.9138 13.2086 10.954 13.1847 10.9954L8.17594 19.6593C7.76368 20.373 8.10103 20.933 8.92555 20.933ZM12.4711 18.4007L15.8244 11.9544C16.2047 11.223 16.8425 11.2149 17.2415 11.9362L20.0791 17.0646C20.4574 17.7474 20.2258 18.312 19.5702 18.3689C19.5309 18.3702 19.4926 18.3709 19.4556 18.3708C18.7133 18.3695 17.748 17.8202 17.3108 17.1478C16.8738 16.4757 16.2226 16.4874 15.8639 17.1611C15.5052 17.8347 14.5371 18.3968 13.7129 18.3968H12.6113C12.5656 18.3968 12.5188 18.3981 12.4711 18.4007Z" fill="#4ab6e8" />
+                                                </svg>
+                                                break;
+                                            case IssuePilot.Models.DBModels.NewsEntryCaseId.NewProject:
+                                                <svg class="icon-limit align-top" width="33" height="23" viewBox="0 0 33 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path id="navbar-icon-fill" fill-rule="evenodd" clip-rule="evenodd" d="M3.00001 23L30 23C31.6569 23 33 21.6568 33 20V7C33 5.34314 31.6569 4 30 4L17 4C15.8954 4 15 3.10457 15 2C15 0.89543 14.1046 0 13 0H3C1.34315 0 0 1.34315 0 3L4.07697e-06 20C3.93212e-06 21.6568 1.34315 23 3.00001 23ZM8.92555 20.933H9.58881C9.60515 20.9334 9.62176 20.9336 9.63865 20.9336H24.1067V20.933C24.9312 20.933 25.2688 20.373 24.8568 19.6588C24.8568 19.6588 24.0175 18.2155 23.4281 17.1972L23.4221 17.1999L22.338 15.3221C22.3311 15.3094 22.3241 15.2967 22.3168 15.2842L17.8189 7.49444L17.2654 6.53574C17.2388 6.48967 17.2111 6.44658 17.1825 6.40645C16.7674 5.82447 16.1522 5.86747 15.7665 6.53548L13.7694 9.99429C13.7695 9.9943 13.7696 9.99432 13.7696 9.99434L13.2613 10.8748C13.2342 10.9138 13.2086 10.954 13.1847 10.9954L8.17594 19.6593C7.76368 20.373 8.10103 20.933 8.92555 20.933ZM12.4711 18.4007L15.8244 11.9544C16.2047 11.223 16.8425 11.2149 17.2415 11.9362L20.0791 17.0646C20.4574 17.7474 20.2258 18.312 19.5702 18.3689C19.5309 18.3702 19.4926 18.3709 19.4556 18.3708C18.7133 18.3695 17.748 17.8202 17.3108 17.1478C16.8738 16.4757 16.2226 16.4874 15.8639 17.1611C15.5052 17.8347 14.5371 18.3968 13.7129 18.3968H12.6113C12.5656 18.3968 12.5188 18.3981 12.4711 18.4007Z" fill="#4B53E8" />
+                                                </svg>
+                                                break;
+                                            case IssuePilot.Models.DBModels.NewsEntryCaseId.RemovedFromProject:
+                                                <svg class="icon-limit align-top" width="33" height="23" viewBox="0 0 33 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M3.00001 23L30 23C31.6569 23 33 21.6568 33 20V7C33 5.34314 31.6569 4 30 4L17 4C15.8954 4 15 3.10457 15 2C15 0.89543 14.1046 0 13 0H3C1.34315 0 0 1.34315 0 3L4.07697e-06 20C3.93212e-06 21.6568 1.34315 23 3.00001 23ZM8.92555 20.933H9.58881C9.60515 20.9334 9.62176 20.9336 9.63865 20.9336H24.1067V20.933C24.9312 20.933 25.2688 20.373 24.8568 19.6588C24.8568 19.6588 24.0175 18.2155 23.4281 17.1972L23.4221 17.1999L22.338 15.3221C22.3311 15.3094 22.3241 15.2967 22.3168 15.2842L17.8189 7.49444L17.2654 6.53574C17.2388 6.48967 17.2111 6.44658 17.1825 6.40645C16.7674 5.82447 16.1522 5.86747 15.7665 6.53548L13.7694 9.99429C13.7695 9.9943 13.7696 9.99432 13.7696 9.99434L13.2613 10.8748C13.2342 10.9138 13.2086 10.954 13.1847 10.9954L8.17594 19.6593C7.76368 20.373 8.10103 20.933 8.92555 20.933ZM12.4711 18.4007L15.8244 11.9544C16.2047 11.223 16.8425 11.2149 17.2415 11.9362L20.0791 17.0646C20.4574 17.7474 20.2258 18.312 19.5702 18.3689C19.5309 18.3702 19.4926 18.3709 19.4556 18.3708C18.7133 18.3695 17.748 17.8202 17.3108 17.1478C16.8738 16.4757 16.2226 16.4874 15.8639 17.1611C15.5052 17.8347 14.5371 18.3968 13.7129 18.3968H12.6113C12.5656 18.3968 12.5188 18.3981 12.4711 18.4007Z" fill="#C14640" />
+                                                </svg>
+                                                break;
+                                            case IssuePilot.Models.DBModels.NewsEntryCaseId.AssignedToTicket:
+                                            case IssuePilot.Models.DBModels.NewsEntryCaseId.NewTicket:
+                                            case IssuePilot.Models.DBModels.NewsEntryCaseId.UnassignedFromTicket:
+                                            case IssuePilot.Models.DBModels.NewsEntryCaseId.NewStatus:
+                                                @switch (item.StatusId)
+                                                {
+                                                    case TicketStatusId.Open:
+                                                        <img class="align-top icon-limit" src="~/img/Offen.svg" />
+                                                        break;
+                                                    case TicketStatusId.InProgress:
+                                                        <img class="align-top icon-limit" src="~/img/InBearbeitung.svg" />
+                                                        break;
+                                                    case TicketStatusId.Paused:
+                                                        <img class="align-top icon-limit" src="~/img/Pausiert.svg" />
+                                                        break;
+                                                    case TicketStatusId.Canceled:
+                                                        <img class="align-top icon-limit" src="~/img/Abgebrochen.svg" />
+                                                        break;
+                                                    case TicketStatusId.Closed:
+                                                        <img class="align-top icon-limit" src="~/img/Abgeschlossen.svg" />
+                                                        break;
+                                                }
+                                                break;
+                                            case IssuePilot.Models.DBModels.NewsEntryCaseId.NewComment:
+                                                <img class="align-top icon-limit" src="~/img/Kommentare.svg" />
+                                                break;
+                                        }
+                                    </span>
+                                </span>
+                                <span class="col-11 pr-3 mx-auto">
+                                    @Html.DisplayFor(modelItem => item.NewsText)
+
+                                    <span class="float-right">
+                                        <span class="icon-wrapper">
+                                            <img class="icon-padding align-top mt-2" src="~/img/Erstellungsdatum.svg" />
+                                        </span>
+                                        <small style="color:#464c50;" class="has-icon">@Html.DisplayFor(modelItem => item.CreateDate)</small>
+                                    </span>
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                
+            }
+        </div>
+    </div>
+</div>
+@{
+    var prevWrapper = !Model.HasPreviousPage ? "" : "underline-hover-wrapper";
+    var prevUnderline = !Model.HasPreviousPage ? "gradient-underline" : "underline-hover";
+}
+<div class="mb-md-3 mb-lg-4 mb-2"></div>
+<div class="text-center mb-5">
+    @if (Model.PageIndex > 2)
+    {
+        <a asp-action="Index"
+           asp-route-pageNumber="1"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">1</span>
+        </a>
+        <span>...</span>
+    }
+
+    @if (Model.PageIndex > 1)
+    {
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           class="tab-link @prevWrapper">
+            <span class="@prevUnderline">@(Model.PageIndex - 1)</span>
+        </a>
+    }
+    <a class="tab-link">
+        <span class="gradient-underline">@Model.PageIndex</span>
+    </a>
+    @if (Model.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">@(Model.PageIndex + 1)</span>
+        </a>
+    }
+    @if (Model.TotalPages > Model.PageIndex + 1)
+    {
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 2)"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">@(Model.PageIndex + 2)</span>
+        </a>
+    }
+    @if (Model.TotalPages > Model.PageIndex + 2)
+    {
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 3)"
+           class="tab-link underline-hover-wrapper">
+            <span class="underline-hover">@(Model.PageIndex + 3)</span>
+        </a>
+    }
+</div>

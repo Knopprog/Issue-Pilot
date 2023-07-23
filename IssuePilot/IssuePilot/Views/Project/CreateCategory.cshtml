@@ -1,0 +1,42 @@
+﻿@model IssuePilot.Models.ViewModels.ProjectCategoryViewModel
+
+@{
+    ViewData["Title"] = "Kategorie hinzufügen";
+    ViewBag.Tab = "2";
+}
+<h4>
+    <a class="back-link btn-slide rounded-pill pr-2 py-1" asp-action="Other" asp-route-id="@Model.ProjectId">
+        <span class="icon-wrapper-clickable">
+            <svg class="back-icon" width="15" height="25" viewBox="0 0 15 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 24L3.83456 15.018C2.79432 13.8738 2.79432 12.1262 3.83456 10.982L12 2" stroke-width="4" />
+            </svg>
+        </span>
+        <span class="back-icon has-icon button-text">Projekt</span>
+    </a>
+</h4>
+<h2 class="mt-4">Kategorie hinzufügen</h2>
+<hr />
+<div class="row">
+    <div class="offset-xl-4 offset-md-3 offset-sm-1"></div>
+    <div class="col-xl-4 col-md-6 col-sm-10 mt-4">
+        <form asp-action="CreateCategory">
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger text-break"></span>
+            </div>
+            <div class="form-group">
+                <input type="hidden" asp-for="ProjectId" value="@Model.ProjectId" class="form-control" />
+            </div>
+            <div class="form-group text-right mt-5">
+                <button type="submit" style="min-width:60px" class="text-nowrap btn btn-blue btn-slide btn-slide-blue">Hinzufügen</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
